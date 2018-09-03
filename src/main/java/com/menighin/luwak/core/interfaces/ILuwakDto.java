@@ -1,4 +1,7 @@
 package com.menighin.luwak.core.interfaces;
 
-public interface ILuwakDto {
+import com.menighin.luwak.core.annotations.LuwakDto;
+
+@LuwakDto
+public interface ILuwakDto<T extends ILuwakModel> {
 }

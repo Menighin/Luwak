@@ -2,11 +2,10 @@ package com.menighin.luwak;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication
-public class LuwakApplication {
+@ComponentScan
+public abstract class LuwakApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LuwakApplication.class, args);
-	}
+
 }

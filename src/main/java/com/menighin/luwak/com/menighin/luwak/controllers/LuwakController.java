@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class LuwakController {
 
     @RequestMapping("/luwak/{wat}")
-    public Object index() {
-        return null;
+    public String index(String wat) {
+        return "It is working D: " + wat;
     }
 
 }
