@@ -15,4 +15,12 @@ public class City implements ILuwakModel {
     @Getter @Setter
     private Country country;
 
+    public City() {}
+
+    public City(int id, String name, Country country) {
+    	this.id = id;
+    	this.name = name;
+    	this.country = country;
+	}
+
 }
