@@ -3,22 +3,20 @@ package com.menighin.luwak.core;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakModel;
 import com.menighin.luwak.core.interfaces.ILuwakRepository;
+import com.menighin.luwak.core.models.LuwakDataTableMetadata;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public abstract class LuwakDataModel<T extends ILuwakModel, E extends ILuwakDto> {
+public abstract class LuwakDataTable<T extends ILuwakModel, E extends ILuwakDto> {
 
 	private Class<?> classT;
 	private Class<?> classE;
 
     @Getter @Setter
     private ILuwakRepository<T> repository;
-
-    @Getter @Setter
-    private LuwakDataModel slave;
 
     private void initClassTypes() {
 		Type superclass = getClass().getGenericSuperclass();
@@ -27,18 +25,17 @@ public abstract class LuwakDataModel<T extends ILuwakModel, E extends ILuwakDto>
 		classE = (Class<?>) parameterized.getActualTypeArguments()[1];
 	}
 
-    public LuwakDataModel() {
+    public LuwakDataTable() {
 		initClassTypes();
 	}
 
-    public LuwakDataModel(ILuwakRepository<T> repository) {
+    public LuwakDataTable(ILuwakRepository<T> repository) {
     	this.repository = repository;
 		initClassTypes();
 	}
 
-    public Object getMetadata() {
-    	int i = 0;
-    	return null;
+    public LuwakDataTableMetadata getMetadata() {
+    	return new LuwakDataTableMetadata(classE);
 	}
 
 }

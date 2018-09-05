@@ -1,12 +1,12 @@
 package testapp.pages;
 
 import com.menighin.luwak.core.LuwakPage;
-import testapp.dataModels.CityDataModel;
+import testapp.dataModels.CityDataTable;
 
 public class CityPage extends LuwakPage {
 
 	public CityPage() {
-		setDataModel(new CityDataModel());
+		setMasterTable(new CityDataTable());
 	}
 
 

@@ -2,6 +2,7 @@ package com.menighin.luwak.com.menighin.luwak.controllers;
 
 import com.menighin.luwak.LuwakApplication;
 import com.menighin.luwak.core.LuwakPage;
+import com.menighin.luwak.core.models.LuwakPageMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import testapp.models.Country;
@@ -21,14 +22,14 @@ public class LuwakController {
     }
 
     @ResponseBody
-	@RequestMapping(value = "/{page}", method = RequestMethod.GET)
-	public Object getMetadata(@PathVariable("page") String pageName) {
+	@RequestMapping(value = "/{page}/meta", method = RequestMethod.GET)
+	public LuwakPageMetadata getMetadata(@PathVariable("page") String pageName) {
 
 		LuwakPage page = luwakApplication.getPage(pageName);
 
-		Object test = page.getMetadata();
+		LuwakPageMetadata pageMetadata = page.getPageMetadata();
 
-		return new Country(0, "Brazil");
+		return pageMetadata;
 	}
 
 }
