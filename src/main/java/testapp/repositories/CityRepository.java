@@ -11,9 +11,9 @@ public class CityRepository implements ILuwakRepository<City> {
 	@Override
 	public ArrayList<City> getAll() {
 
-		Country brazil = new Country(0, "Brazil");
-		Country usa = new Country(1, "United States of America");
-		Country portugal = new Country(2, "Portugal");
+		final Country brazil = new Country(0, "Brazil");
+		final Country usa = new Country(1, "United States of America");
+		final Country portugal = new Country(2, "Portugal");
 
 		return new ArrayList<City>() {{
 			add(new City(0, "Belo Horizonte", brazil));

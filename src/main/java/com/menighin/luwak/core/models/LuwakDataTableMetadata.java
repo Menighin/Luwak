@@ -28,7 +28,7 @@ public class LuwakDataTableMetadata {
 
 	public LuwakDataTableMetadata(Class clazz) {
 
-		columns = new ArrayList<ColumnMetadata>();
+		columns = new ArrayList<>();
 
 		Field[] fields = clazz.getDeclaredFields();
 
@@ -36,7 +36,7 @@ public class LuwakDataTableMetadata {
 			if (!f.isAnnotationPresent(Label.class)) continue;
 
 			ColumnMetadata column = new ColumnMetadata();
-			Label label = f.getDeclaredAnnotation(Label.class);
+			Label label = f.getAnnotation(Label.class);
 			column.setLabel(label.value());
 
 			columns.add(column);
