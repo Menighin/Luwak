@@ -1,8 +1,10 @@
 package testapp;
 
 import com.menighin.luwak.LuwakApplication;
+import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import testapp.filters.CityFilter;
 import testapp.pages.CityPage;
 
 

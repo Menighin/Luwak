@@ -1,19 +1,33 @@
 package com.menighin.luwak.core;
 
+import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.models.LuwakPageMetadata;
+import lombok.Getter;
 import lombok.Setter;
 
-public abstract class LuwakPage {
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
-	@Setter
+public abstract class LuwakPage<T extends ILuwakFilter> {
+
+	private Class<?> filterClass;
+
+	@Getter	@Setter
 	private LuwakDataTable masterTable;
 
-	@Setter
+	@Getter @Setter
 	private LuwakDataTable slaveTable;
 
 	@Setter
 	private String slaveMasterField;
 
+
+	// Instance initialization
+	{
+		Type superclass = getClass().getGenericSuperclass();
+		ParameterizedType parameterized = (ParameterizedType) superclass;
+		filterClass = (Class<?>) parameterized.getActualTypeArguments()[0];
+	}
 
 	public LuwakPageMetadata getPageMetadata() {
 		LuwakPageMetadata pageMetadata = new LuwakPageMetadata();

@@ -18,7 +18,8 @@ public abstract class LuwakDataTable<T extends ILuwakModel, E extends ILuwakDto>
     @Getter @Setter
     private ILuwakRepository<T> repository;
 
-    private void initClassTypes() {
+    // Instance initialization
+    {
 		Type superclass = getClass().getGenericSuperclass();
 		ParameterizedType parameterized = (ParameterizedType) superclass;
 		classT = (Class<?>) parameterized.getActualTypeArguments()[0];
@@ -26,12 +27,10 @@ public abstract class LuwakDataTable<T extends ILuwakModel, E extends ILuwakDto>
 	}
 
     public LuwakDataTable() {
-		initClassTypes();
 	}
 
     public LuwakDataTable(ILuwakRepository<T> repository) {
     	this.repository = repository;
-		initClassTypes();
 	}
 
     public LuwakDataTableMetadata getMetadata() {
