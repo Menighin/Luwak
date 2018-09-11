@@ -7,7 +7,10 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LuwakDto {
+public @interface LuwakTable {
+	boolean canCreate() default false;
+	boolean canDelete() default false;
+	boolean canEdit()   default false;
 }
 
 

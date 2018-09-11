@@ -6,6 +6,10 @@ import lombok.Setter;
 
 public class City implements ILuwakModel {
 
+	public static final String ID = "id";
+	public static final String NAME = "name";
+	public static final String COUNTRY = "country";
+
     @Getter @Setter
     private int id;
 

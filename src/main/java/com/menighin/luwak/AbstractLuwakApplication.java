@@ -1,7 +1,7 @@
 package com.menighin.luwak;
 
-import com.menighin.luwak.core.LuwakPage;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
+import com.menighin.luwak.core.models.AbstractLuwakPage;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
@@ -10,11 +10,11 @@ import java.util.HashMap;
 
 @ComponentScan
 @Component
-public abstract class LuwakApplication {
+public abstract class AbstractLuwakApplication {
 
 	private HashMap<String, Class<? extends ILuwakFilter>> _pagesMap;
 
-	public LuwakApplication() {
+	public AbstractLuwakApplication() {
 		_pagesMap = new HashMap<>();
 	}
 
@@ -22,9 +22,9 @@ public abstract class LuwakApplication {
 		_pagesMap.put(type.getSimpleName(), type);
 	}
 
-	public LuwakPage<? extends ILuwakFilter> getPage(String pageName) {
+	public AbstractLuwakPage<? extends ILuwakFilter> getPage(String pageName) {
 		try {
-			return (LuwakPage<? extends ILuwakFilter>) _pagesMap.get(pageName).newInstance();
+			return (AbstractLuwakPage<? extends ILuwakFilter>) _pagesMap.get(pageName).newInstance();
 		} catch (Exception e) {
 			return null;
 		}
