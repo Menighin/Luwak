@@ -7,10 +7,10 @@ import com.menighin.luwak.core.interfaces.ILuwakFilter
 @LuwakFilter
 class CityPageFilter : ILuwakFilter {
 
-    @Label("Code")
-    var cityCode: String = ""
+    @Label("Id")
+    var id: Int = 0
 
-    @Label("Country")
-    var countryCode: String = ""
+    @Label("Name")
+    var name: String = ""
 
 }

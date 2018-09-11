@@ -5,20 +5,22 @@ import com.menighin.luwak.core.enums.FilterTypeEnum
 
 class LuwakFilterMetadataDto(var id: String, var label: String, var type: FilterTypeEnum) {
 
-	fun getFiltersFrom(filterClass: Class<*>) : ArrayList<LuwakFilterMetadataDto> {
-		val result = ArrayList<LuwakFilterMetadataDto>()
+	companion object {
+		fun getFiltersFrom(filterClass: Class<*>) : ArrayList<LuwakFilterMetadataDto> {
+			val result = ArrayList<LuwakFilterMetadataDto>()
 
-		val fields = filterClass.declaredFields
+			val fields = filterClass.declaredFields
 
-		for (f in fields) {
-			if (!f.isAnnotationPresent(Label::class.java)) continue
+			for (f in fields) {
+				if (!f.isAnnotationPresent(Label::class.java)) continue
 
-			val label = f.getAnnotation(Label::class.java).value
+				val label = f.getAnnotation(Label::class.java).value
 
-			result.add(LuwakFilterMetadataDto(f.name, label, FilterTypeEnum.TEXT))
+				result.add(LuwakFilterMetadataDto(f.name, label, FilterTypeEnum.TEXT))
 
+			}
+			return result
 		}
-
-		return result
 	}
+
 }

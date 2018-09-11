@@ -2,6 +2,7 @@ package com.menighin.luwak.core.models;
 
 import com.menighin.luwak.core.annotations.MapModel;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
+import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.interfaces.ILuwakModel;
 import com.menighin.luwak.core.interfaces.ILuwakRepository;
 import com.menighin.luwak.core.dtos.LuwakDataTableMetadataDto;
@@ -15,13 +16,13 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 @NoArgsConstructor
-public abstract class AbstractLuwakDataTable<T extends ILuwakModel, E extends ILuwakDto> {
+public abstract class AbstractLuwakDataTable<T extends ILuwakModel, E extends ILuwakDto, F extends ILuwakFilter> {
 
 	private Class<T> classT;
 	private Class<E> classE;
 
     @Getter @Setter
-    private ILuwakRepository<T> repository;
+    private ILuwakRepository<T, F> repository;
 
     // Instance initialization
     {
@@ -31,7 +32,7 @@ public abstract class AbstractLuwakDataTable<T extends ILuwakModel, E extends IL
 		classE = (Class<E>) parameterized.getActualTypeArguments()[1];
 	}
 
-    public AbstractLuwakDataTable(ILuwakRepository<T> repository) {
+    public AbstractLuwakDataTable(ILuwakRepository<T, F> repository) {
     	this.repository = repository;
 	}
 
@@ -40,8 +41,8 @@ public abstract class AbstractLuwakDataTable<T extends ILuwakModel, E extends IL
 	}
 
 
-	public ArrayList<E> getData() {
-    	ArrayList<T> models = repository.getAll();
+	public ArrayList<E> getData(F filter) {
+    	ArrayList<T> models = repository.getAll(filter);
 		ArrayList<E> dtos = new ArrayList<>();
 
     	Field[] dtoFields = classE.getDeclaredFields();

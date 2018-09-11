@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public abstract class AbstractLuwakPage<T extends ILuwakFilter> {
 
+	@Getter
 	private Class<?> filterClass;
 
 	@Getter	@Setter
@@ -45,14 +46,13 @@ public abstract class AbstractLuwakPage<T extends ILuwakFilter> {
 		if (slaveTable != null)
 			pageMetadata.setSlaveTable(slaveTable.getMetadata());
 
-		// TODO: Fix this
-		pageMetadata.setFilters(new LuwakFilterMetadataDto("","", FilterTypeEnum.AUTOCOMPLETE).getFiltersFrom(filterClass));
+		pageMetadata.setFilters(LuwakFilterMetadataDto.Companion.getFiltersFrom(filterClass));
 
 		return pageMetadata;
 	}
 
-	public ArrayList<ILuwakDto> getMasterTableData() {
-		return masterTable.getData();
+	public ArrayList<ILuwakDto> getMasterTableData(ILuwakFilter filter) {
+		return masterTable.getData(filter);
 	}
 
 }
