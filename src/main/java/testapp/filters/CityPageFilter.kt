@@ -8,9 +8,9 @@ import com.menighin.luwak.core.interfaces.ILuwakFilter
 class CityPageFilter : ILuwakFilter {
 
     @Label("Id")
-    var id: Int = 0
+    var id: Int? = null
 
     @Label("Name")
-    var name: String = ""
+    var name: String? = null
 
 }

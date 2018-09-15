@@ -18,14 +18,15 @@ public class LuwakController {
 	private AbstractLuwakApplication luwakApplication;
 
     @ResponseBody
-    @RequestMapping(value = "/{page}/getAll", method = RequestMethod.GET)
-    public ArrayList<ILuwakDto> getAll(@PathVariable("page") String pageName, @RequestParam("filter") String filterJson) {
+    @RequestMapping(value = "/{pageName}/getAll", method = RequestMethod.GET)
+    public ArrayList<ILuwakDto> getAll(@PathVariable("pageName") String pageName,
+									   @RequestParam(value = "page", required = false) Integer page,
+									   @RequestParam(value = "filter", required = false) String filterJson) {
 
-		AbstractLuwakPage page = luwakApplication.getPage(pageName);
+		AbstractLuwakPage luwakPage = luwakApplication.getPage(pageName);
 		try {
-			ILuwakFilter filter = (ILuwakFilter) new ObjectMapper().readValue(filterJson, page.getFilterClass());
-			int i = 0;
-			return page.getMasterTableData(filter);
+			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) new ObjectMapper().readValue(filterJson, luwakPage.getFilterClass());
+			return luwakPage.getTableData(page == null ? 0 : page.intValue(), filter);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

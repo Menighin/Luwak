@@ -4,7 +4,7 @@ import com.menighin.luwak.core.annotations.MapModel;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.interfaces.ILuwakModel;
-import com.menighin.luwak.core.interfaces.ILuwakRepository;
+import com.menighin.luwak.core.interfaces.ILuwakDatasource;
 import com.menighin.luwak.core.dtos.LuwakDataTableMetadataDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,38 +16,29 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 @NoArgsConstructor
-public abstract class AbstractLuwakDataTable<T extends ILuwakModel, E extends ILuwakDto, F extends ILuwakFilter> {
+public abstract class AbstractLuwakDataTable<M extends ILuwakModel, E extends ILuwakDto, F extends ILuwakFilter> {
 
-	private Class<T> classT;
+	private Class<M> classT;
 	private Class<E> classE;
-
-    @Getter @Setter
-    private ILuwakRepository<T, F> repository;
 
     // Instance initialization
     {
 		Type superclass = getClass().getGenericSuperclass();
 		ParameterizedType parameterized = (ParameterizedType) superclass;
-		classT = (Class<T>) parameterized.getActualTypeArguments()[0];
+		classT = (Class<M>) parameterized.getActualTypeArguments()[0];
 		classE = (Class<E>) parameterized.getActualTypeArguments()[1];
-	}
-
-    public AbstractLuwakDataTable(ILuwakRepository<T, F> repository) {
-    	this.repository = repository;
 	}
 
     public LuwakDataTableMetadataDto getMetadata() {
     	return new LuwakDataTableMetadataDto(classE);
 	}
 
-
-	public ArrayList<E> getData(F filter) {
-    	ArrayList<T> models = repository.getAll(filter);
+	public ArrayList<E> getTableData(ArrayList<M> models) {
 		ArrayList<E> dtos = new ArrayList<>();
 
     	Field[] dtoFields = classE.getDeclaredFields();
 
-    	for (T m : models) {
+    	for (M m : models) {
 			try {
 				E dto = classE.newInstance();
 

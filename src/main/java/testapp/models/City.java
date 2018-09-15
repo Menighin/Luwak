@@ -10,13 +10,10 @@ public class City implements ILuwakModel {
 	public static final String NAME = "name";
 	public static final String COUNTRY = "country";
 
-    @Getter @Setter
     private int id;
 
-    @Getter @Setter
     private String name;
 
-    @Getter @Setter
     private Country country;
 
     public City() {}
@@ -27,4 +24,27 @@ public class City implements ILuwakModel {
     	this.country = country;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
 }
