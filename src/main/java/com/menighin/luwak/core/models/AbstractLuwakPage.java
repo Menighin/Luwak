@@ -10,9 +10,11 @@ import com.menighin.luwak.core.interfaces.ILuwakModel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Map;
 
 public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakFilter> {
 
@@ -22,10 +24,12 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 	@Getter
 	private Class<? extends ILuwakFilter> filterClass;
 
-	@Getter	@Setter
+	@Getter
+	@Setter
 	private AbstractLuwakDataTable table;
 
-	@Getter @Setter
+	@Getter
+	@Setter
 	private ILuwakDatasource<M, F> datasource;
 
 	// Instance initialization
@@ -38,6 +42,7 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 
 	/**
 	 * Gets the page metadata in order to built it.
+	 *
 	 * @return The metadata object
 	 */
 	public LuwakPageMetadataDto getPageMetadata() {
@@ -51,9 +56,34 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 		return pageMetadata;
 	}
 
-	public ArrayList<ILuwakDto> getTableData(int page, F filter) {
+	public ArrayList<? extends ILuwakDto> getTableData(int page, F filter) {
 		ArrayList<M> models = datasource.getAll(page, filter);
 		return table.getTableData(models);
 	}
 
+	public void editModel(int id, Map<String, Object> dtoMap) {
+
+		try {
+
+			// Generating DTO model
+			Class classDto = table.getClassDto();
+			ILuwakDto dto = (ILuwakDto) classDto.newInstance();
+			Field[] fields = classDto.getDeclaredFields();
+
+			for(Field f : fields) {
+
+				if (dtoMap.containsKey(f.getName())) {
+					f.setAccessible(true);
+					f.set(dto, dtoMap.get(f.getName()));
+					f.setAccessible(false);
+				}
+			}
+
+			table.editModel(id, dto);
+
+		} catch (Exception e) {
+			// Shut up
+		}
+
+	}
 }

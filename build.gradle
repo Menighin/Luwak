@@ -39,6 +39,7 @@ dependencies {
 	compileOnly('org.projectlombok:lombok')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile "org.jetbrains.kotlin:kotlin-reflect:1.2.61-release-89 (1.2.61)"
 //	testCompile('org.springframework.security:spring-security-test')
 }
 

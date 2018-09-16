@@ -4,7 +4,7 @@ public enum ColumnTypeEnum {
 	Integer,
 	Decimal,
 	Text,
-	Combobox,
+	Select,
 	Date,
 	Datetime,
 	Checkbox

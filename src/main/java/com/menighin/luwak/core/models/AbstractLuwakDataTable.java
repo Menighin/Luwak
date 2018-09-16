@@ -1,46 +1,53 @@
 package com.menighin.luwak.core.models;
 
 import com.menighin.luwak.core.annotations.MapModel;
+import com.menighin.luwak.core.dtos.LuwakDataTableMetadataDto;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.interfaces.ILuwakModel;
-import com.menighin.luwak.core.interfaces.ILuwakDatasource;
-import com.menighin.luwak.core.dtos.LuwakDataTableMetadataDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Map;
 
 @NoArgsConstructor
-public abstract class AbstractLuwakDataTable<M extends ILuwakModel, E extends ILuwakDto, F extends ILuwakFilter> {
+public abstract class AbstractLuwakDataTable<M extends ILuwakModel, D extends ILuwakDto, F extends ILuwakFilter> {
 
-	private Class<M> classT;
-	private Class<E> classE;
+	private Class<M> classModel;
+	private Class<D> classDto;
 
-    // Instance initialization
+	public Class<M> getClassModel() {
+		return classModel;
+	}
+
+	public Class<D> getClassDto() {
+		return classDto;
+	}
+
+	// Instance initialization
     {
 		Type superclass = getClass().getGenericSuperclass();
 		ParameterizedType parameterized = (ParameterizedType) superclass;
-		classT = (Class<M>) parameterized.getActualTypeArguments()[0];
-		classE = (Class<E>) parameterized.getActualTypeArguments()[1];
+		classModel = (Class<M>) parameterized.getActualTypeArguments()[0];
+		classDto = (Class<D>) parameterized.getActualTypeArguments()[1];
 	}
 
     public LuwakDataTableMetadataDto getMetadata() {
-    	return new LuwakDataTableMetadataDto(classE);
+    	return new LuwakDataTableMetadataDto(classDto);
 	}
 
-	public ArrayList<E> getTableData(ArrayList<M> models) {
-		ArrayList<E> dtos = new ArrayList<>();
+	public ArrayList<D> getTableData(ArrayList<M> models) {
+		ArrayList<D> dtos = new ArrayList<>();
 
-    	Field[] dtoFields = classE.getDeclaredFields();
+    	Field[] dtoFields = classDto.getDeclaredFields();
 
     	for (M m : models) {
 			try {
-				E dto = classE.newInstance();
+				D dto = classDto.newInstance();
 
 				// Mapping fields to Dto
 				for (Field f : dtoFields) {
@@ -66,6 +73,10 @@ public abstract class AbstractLuwakDataTable<M extends ILuwakModel, E extends IL
 			}
 		}
 		return dtos;
+	}
+
+	public void editModel(int id, D dto) {
+
 	}
 
 }

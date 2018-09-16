@@ -7,9 +7,12 @@ import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.models.AbstractLuwakPage;
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class LuwakController {
@@ -17,15 +20,18 @@ public class LuwakController {
     @Autowired
 	private AbstractLuwakApplication luwakApplication;
 
+	@Autowired
+	private ObjectMapper mapper;
+
     @ResponseBody
-    @RequestMapping(value = "/{pageName}/getAll", method = RequestMethod.GET)
+    @GetMapping(value = "/{pageName}/getAll")
     public ArrayList<ILuwakDto> getAll(@PathVariable("pageName") String pageName,
 									   @RequestParam(value = "page", required = false) Integer page,
 									   @RequestParam(value = "filter", required = false) String filterJson) {
 
 		AbstractLuwakPage luwakPage = luwakApplication.getPage(pageName);
 		try {
-			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) new ObjectMapper().readValue(filterJson, luwakPage.getFilterClass());
+			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) mapper.readValue(filterJson, luwakPage.getFilterClass());
 			return luwakPage.getTableData(page == null ? 0 : page.intValue(), filter);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -35,9 +41,19 @@ public class LuwakController {
     }
 
     @ResponseBody
-	@RequestMapping(value = "/{page}/meta", method = RequestMethod.GET)
+	@GetMapping(value = "/{page}/meta")
 	public LuwakPageMetadataDto getMetadata(@PathVariable("page") String pageName) {
 		AbstractLuwakPage page = luwakApplication.getPage(pageName);
 		return page.getPageMetadata();
 	}
+
+	@ResponseBody
+	@PutMapping(value = "/{page}/edit/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public void edit(@PathVariable("page") String pageName,
+					 @PathVariable("id") int id,
+					 @RequestBody  Map<String, Object> model) {
+		AbstractLuwakPage page = luwakApplication.getPage(pageName);
+		page.editModel(id, model);
+	}
+
 }
