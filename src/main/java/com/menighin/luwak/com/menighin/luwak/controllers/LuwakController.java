@@ -7,7 +7,9 @@ import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.models.AbstractLuwakPage;
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -49,11 +51,18 @@ public class LuwakController {
 
 	@ResponseBody
 	@PutMapping(value = "/{page}/edit/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public void edit(@PathVariable("page") String pageName,
-					 @PathVariable("id") int id,
-					 @RequestBody  Map<String, Object> model) {
+	public ResponseEntity edit(@PathVariable("page") String pageName,
+							   @PathVariable("id") int id,
+							   @RequestBody  Map<String, Object> model) {
 		AbstractLuwakPage page = luwakApplication.getPage(pageName);
-		page.editModel(id, model);
+		boolean edited = page.editModel(id, model);
+
+		if (edited) {
+			return new ResponseEntity(HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
 	}
 
 }

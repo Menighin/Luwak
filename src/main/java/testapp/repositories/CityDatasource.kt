@@ -1,29 +1,33 @@
 package testapp.repositories
 
 import com.menighin.luwak.core.interfaces.ILuwakDatasource
+import com.menighin.luwak.core.interfaces.ILuwakDto
+import org.springframework.stereotype.Repository
 import testapp.filters.CityPageFilter
 import testapp.models.City
 import testapp.models.Country
+import testapp.viewModels.CityViewModel
 import java.util.ArrayList
 
-class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
+@Repository
+open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
+
+	var countries: List<Country> = ArrayList()
+	var cities: List<City> = ArrayList()
+
+	constructor() {
+		countries = mutableListOf(Country(0, "Brazil"), Country(1, "United States of America"), Country(2, "Portugal"))
+		cities = mutableListOf(
+				City(0, "Belo Horizonte", countries[0]),
+				City(1, "Sao Paulo", countries[0]),
+				City(2, "Denver", countries[1]),
+				City(3, "San Francisco", countries[1]),
+				City(4, "Porto", countries[2]),
+				City(5, "Lisboa", countries[2])
+		)
+	}
 
 	override fun getAll(page: Int, filter: CityPageFilter?): ArrayList<City> {
-
-		val brazil = Country(0, "Brazil")
-		val usa = Country(1, "United States of America")
-		val portugal = Country(2, "Portugal")
-		val cities = object: ArrayList<City>() {
-			init {
-				add(City(0, "Belo Horizonte", brazil))
-				add(City(1, "Sao Paulo", brazil))
-				add(City(2, "Denver", usa))
-				add(City(3, "San Francisco", usa))
-				add(City(4, "Porto", portugal))
-				add(City(5, "Lisboa", portugal))
-			}
-		}
-
 		val filteredCities =
 			cities.filter {
 				city ->
@@ -32,5 +36,14 @@ class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 			}
 
 		return filteredCities as ArrayList<City>
+	}
+
+	override fun editModel(id: Int, luwakDto: ILuwakDto<City>?): Boolean {
+		val dto = luwakDto as CityViewModel
+
+		val model = cities.find { it.id == id } ?: return false
+		model.name = dto.cityName
+
+		return true
 	}
 }

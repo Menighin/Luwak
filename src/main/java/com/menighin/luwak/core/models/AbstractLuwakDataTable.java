@@ -75,8 +75,4 @@ public abstract class AbstractLuwakDataTable<M extends ILuwakModel, D extends IL
 		return dtos;
 	}
 
-	public void editModel(int id, D dto) {
-
-	}
-
 }

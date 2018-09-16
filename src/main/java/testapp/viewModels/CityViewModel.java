@@ -17,13 +17,26 @@ public class CityViewModel implements ILuwakDto<City> {
     @Label("City")
     @MapModel(City.NAME)
 	@ColumnType(ColumnTypeEnum.Text)
-	@Getter @Setter
     private String cityName;
 
     @Label("Country")
 	@MapModel(City.COUNTRY + "." + Country.CODE)
 	@ColumnType(ColumnTypeEnum.Select)
-	@Getter @Setter
     private String countryName;
 
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
 }

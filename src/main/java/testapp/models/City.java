@@ -11,9 +11,7 @@ public class City implements ILuwakModel {
 	public static final String COUNTRY = "country";
 
     private int id;
-
     private String name;
-
     private Country country;
 
     public City() {}

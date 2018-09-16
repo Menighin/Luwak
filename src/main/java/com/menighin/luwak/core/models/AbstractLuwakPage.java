@@ -9,6 +9,7 @@ import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.interfaces.ILuwakModel;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -16,6 +17,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 
+@Component
 public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakFilter> {
 
 	@Getter
@@ -61,10 +63,9 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 		return table.getTableData(models);
 	}
 
-	public void editModel(int id, Map<String, Object> dtoMap) {
+	public boolean editModel(int id, Map<String, Object> dtoMap) {
 
 		try {
-
 			// Generating DTO model
 			Class classDto = table.getClassDto();
 			ILuwakDto dto = (ILuwakDto) classDto.newInstance();
@@ -79,11 +80,13 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 				}
 			}
 
-			table.editModel(id, dto);
+			return datasource.editModel(id, dto);
 
 		} catch (Exception e) {
-			// Shut up
+			e.printStackTrace();
 		}
+
+		return false;
 
 	}
 }
