@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -63,6 +62,17 @@ public class LuwakController {
 		else {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	@ResponseBody
+	@DeleteMapping(value = "/{page}/delete/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity delete(@PathVariable("page") String pageName,
+								 @PathVariable("id") int id,
+								 @RequestBody Map<String, Object> model) {
+    	AbstractLuwakPage page = luwakApplication.getPage(pageName);
+    	boolean deleted = page.deleteModel(id, model);
+
+    	return new ResponseEntity(HttpStatus.OK);
 	}
 
 }

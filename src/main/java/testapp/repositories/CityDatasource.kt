@@ -46,4 +46,10 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 
 		return true
 	}
+
+	override fun deleteModel(id: Int, luwakDto: ILuwakDto<City>?): Boolean {
+		cities = cities.filter { it.id != id }
+
+		return true
+	}
 }
