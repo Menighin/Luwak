@@ -2,7 +2,6 @@ package com.menighin.luwak.core.models;
 
 import com.menighin.luwak.core.dtos.LuwakFilterMetadataDto;
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto;
-import com.menighin.luwak.core.enums.FilterTypeEnum;
 import com.menighin.luwak.core.interfaces.ILuwakDatasource;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
@@ -65,7 +64,7 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 
 	public boolean create(Map<String, Object> dtoMap) {
 		try {
-			ILuwakDto dto = createModel(dtoMap);
+			ILuwakDto dto = convertMapToDto(dtoMap);
 			return datasource.create(dto);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -75,10 +74,9 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 	}
 
 	public boolean editModel(int id, Map<String, Object> dtoMap) {
-
 		try {
-			ILuwakDto dto = createModel(dtoMap);
-			return datasource.editModel(id, dto);
+			ILuwakDto dto = convertMapToDto(dtoMap);
+			return datasource.update(id, dto);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -86,7 +84,18 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 		return false;
 	}
 
-	private ILuwakDto createModel(Map<String, Object> dtoMap) throws IllegalAccessException, InstantiationException {
+	public boolean deleteModel(int id, Map<String, Object> dtoMap) {
+		try {
+			ILuwakDto dto = convertMapToDto(dtoMap);
+			return datasource.delete(id, dto);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	private ILuwakDto convertMapToDto(Map<String, Object> model) throws IllegalAccessException, InstantiationException {
 		// Generating DTO model
 		Class classDto = table.getClassDto();
 		ILuwakDto dto = (ILuwakDto) classDto.newInstance();
@@ -94,9 +103,9 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 
 		for(Field f : fields) {
 
-			if (dtoMap.containsKey(f.getName())) {
+			if (model.containsKey(f.getName())) {
 				f.setAccessible(true);
-				f.set(dto, dtoMap.get(f.getName()));
+				f.set(dto, model.get(f.getName()));
 				f.setAccessible(false);
 			}
 		}

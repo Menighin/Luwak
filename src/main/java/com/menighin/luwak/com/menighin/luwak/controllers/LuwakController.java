@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -42,15 +41,6 @@ public class LuwakController {
 		return null;
     }
 
-    public ResponseEntity create(@PathVariable("page") String pageName,
-								 @RequestBody Map<String, Object> model) {
-
-    	AbstractLuwakPage page = luwakApplication.getPage(pageName);
-    	page.create(model);
-
-    	return new ResponseEntity(HttpStatus.OK);
-	}
-
     @ResponseBody
 	@GetMapping(value = "/{page}/meta")
 	public LuwakPageMetadataDto getMetadata(@PathVariable("page") String pageName) {
@@ -59,7 +49,20 @@ public class LuwakController {
 	}
 
 	@ResponseBody
-	@PutMapping(value = "/{page}/edit/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/{page}/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity create(@PathVariable("page") String pageName,
+								 @RequestBody Map<String, Object> model) {
+		AbstractLuwakPage page = luwakApplication.getPage(pageName);
+		boolean created = page.create(model);
+
+		if (created)
+			return new ResponseEntity(HttpStatus.CREATED);
+		else
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+	}
+
+	@ResponseBody
+	@PutMapping(value = "/{page}/update/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity edit(@PathVariable("page") String pageName,
 							   @PathVariable("id") int id,
 							   @RequestBody  Map<String, Object> model) {
@@ -71,6 +74,20 @@ public class LuwakController {
 		} else {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	@ResponseBody
+	@DeleteMapping(value = "/{page}/delete/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity delete(@PathVariable("page") String pageName,
+								 @PathVariable("id") int id,
+								 @RequestBody Map<String, Object> model) {
+    	AbstractLuwakPage page = luwakApplication.getPage(pageName);
+    	boolean deleted = page.deleteModel(id, model);
+
+    	if (deleted)
+    		return new ResponseEntity(HttpStatus.OK);
+    	else
+    		return new ResponseEntity(HttpStatus.BAD_REQUEST);
 	}
 
 }

@@ -50,11 +50,17 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 		return true
 	}
 
-	override fun editModel(id: Int, luwakDto: ILuwakDto<City>?): Boolean {
+	override fun update(id: Int, luwakDto: ILuwakDto<City>?): Boolean {
 		val dto = luwakDto as CityViewModel
 
 		val model = cities.find { it.id == id } ?: return false
 		model.name = dto.cityName
+
+		return true
+	}
+
+	override fun delete(id: Int, luwakDto: ILuwakDto<City>?): Boolean {
+		cities = cities.filter {it.id != id}.toMutableList()
 
 		return true
 	}
