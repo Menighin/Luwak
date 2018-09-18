@@ -63,30 +63,46 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 		return table.getTableData(models);
 	}
 
-	public boolean editModel(int id, Map<String, Object> dtoMap) {
-
+	public boolean create(Map<String, Object> dtoMap) {
 		try {
-			// Generating DTO model
-			Class classDto = table.getClassDto();
-			ILuwakDto dto = (ILuwakDto) classDto.newInstance();
-			Field[] fields = classDto.getDeclaredFields();
-
-			for(Field f : fields) {
-
-				if (dtoMap.containsKey(f.getName())) {
-					f.setAccessible(true);
-					f.set(dto, dtoMap.get(f.getName()));
-					f.setAccessible(false);
-				}
-			}
-
-			return datasource.editModel(id, dto);
-
+			ILuwakDto dto = createModel(dtoMap);
+			return datasource.create(dto);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return false;
-
 	}
+
+	public boolean editModel(int id, Map<String, Object> dtoMap) {
+
+		try {
+			ILuwakDto dto = createModel(dtoMap);
+			return datasource.editModel(id, dto);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	private ILuwakDto createModel(Map<String, Object> dtoMap) throws IllegalAccessException, InstantiationException {
+		// Generating DTO model
+		Class classDto = table.getClassDto();
+		ILuwakDto dto = (ILuwakDto) classDto.newInstance();
+		Field[] fields = classDto.getDeclaredFields();
+
+		for(Field f : fields) {
+
+			if (dtoMap.containsKey(f.getName())) {
+				f.setAccessible(true);
+				f.set(dto, dtoMap.get(f.getName()));
+				f.setAccessible(false);
+			}
+		}
+
+		return dto;
+	}
+
+
 }

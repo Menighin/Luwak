@@ -42,6 +42,15 @@ public class LuwakController {
 		return null;
     }
 
+    public ResponseEntity create(@PathVariable("page") String pageName,
+								 @RequestBody Map<String, Object> model) {
+
+    	AbstractLuwakPage page = luwakApplication.getPage(pageName);
+    	page.create(model);
+
+    	return new ResponseEntity(HttpStatus.OK);
+	}
+
     @ResponseBody
 	@GetMapping(value = "/{page}/meta")
 	public LuwakPageMetadataDto getMetadata(@PathVariable("page") String pageName) {
@@ -59,8 +68,7 @@ public class LuwakController {
 
 		if (edited) {
 			return new ResponseEntity(HttpStatus.OK);
-		}
-		else {
+		} else {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}

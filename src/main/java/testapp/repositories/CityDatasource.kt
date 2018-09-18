@@ -12,8 +12,8 @@ import java.util.ArrayList
 @Repository
 open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 
-	var countries: List<Country> = ArrayList()
-	var cities: List<City> = ArrayList()
+	private var countries: MutableList<Country> = ArrayList()
+	private var cities: MutableList<City> = ArrayList()
 
 	constructor() {
 		countries = mutableListOf(Country(0, "Brazil"), Country(1, "United States of America"), Country(2, "Portugal"))
@@ -36,6 +36,18 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 			}
 
 		return filteredCities as ArrayList<City>
+	}
+
+	override fun create(luwakDto: ILuwakDto<City>): Boolean {
+		val dto = luwakDto as CityViewModel
+		val countryId = dto.countryName.toInt()
+		val country = countries.find { it.id == countryId }
+		var lastId = cities.sortedBy { it.id }.last().id
+		val newCity = City(++lastId, dto.cityName, country)
+
+		cities.add(newCity)
+
+		return true
 	}
 
 	override fun editModel(id: Int, luwakDto: ILuwakDto<City>?): Boolean {
