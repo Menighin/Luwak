@@ -1,7 +1,9 @@
 package com.menighin.luwak.core.models;
 
+import com.menighin.luwak.core.dtos.CrudResponse;
 import com.menighin.luwak.core.dtos.LuwakFilterMetadataDto;
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto;
+import com.menighin.luwak.core.enums.ResponseStatusEnum;
 import com.menighin.luwak.core.interfaces.ILuwakDatasource;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
@@ -62,7 +64,7 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 		return table.getTableData(models);
 	}
 
-	public boolean create(Map<String, Object> dtoMap) {
+	public CrudResponse create(Map<String, Object> dtoMap) {
 		try {
 			ILuwakDto dto = convertMapToDto(dtoMap);
 			return datasource.create(dto);
@@ -70,10 +72,10 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 			e.printStackTrace();
 		}
 
-		return false;
+		return new CrudResponse(ResponseStatusEnum.ERROR, null);
 	}
 
-	public boolean editModel(int id, Map<String, Object> dtoMap) {
+	public CrudResponse editModel(int id, Map<String, Object> dtoMap) {
 		try {
 			ILuwakDto dto = convertMapToDto(dtoMap);
 			return datasource.update(id, dto);
@@ -81,10 +83,10 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 			e.printStackTrace();
 		}
 
-		return false;
+		return new CrudResponse(ResponseStatusEnum.ERROR, null);
 	}
 
-	public boolean deleteModel(int id, Map<String, Object> dtoMap) {
+	public CrudResponse deleteModel(int id, Map<String, Object> dtoMap) {
 		try {
 			ILuwakDto dto = convertMapToDto(dtoMap);
 			return datasource.delete(id, dto);
@@ -92,7 +94,7 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 			e.printStackTrace();
 		}
 
-		return false;
+		return new CrudResponse(ResponseStatusEnum.ERROR, null);
 	}
 
 	private ILuwakDto convertMapToDto(Map<String, Object> model) throws IllegalAccessException, InstantiationException {

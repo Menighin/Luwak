@@ -1,5 +1,7 @@
 package testapp.repositories
 
+import com.menighin.luwak.core.dtos.CrudResponse
+import com.menighin.luwak.core.enums.ResponseStatusEnum
 import com.menighin.luwak.core.interfaces.ILuwakDatasource
 import com.menighin.luwak.core.interfaces.ILuwakDto
 import org.springframework.stereotype.Repository
@@ -38,7 +40,7 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 		return filteredCities as ArrayList<City>
 	}
 
-	override fun create(luwakDto: ILuwakDto<City>): Boolean {
+	override fun create(luwakDto: ILuwakDto<City>): CrudResponse {
 		val dto = luwakDto as CityViewModel
 		val countryId = dto.countryName.toInt()
 		val country = countries.find { it.id == countryId }
@@ -47,21 +49,21 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 
 		cities.add(newCity)
 
-		return true
+		return CrudResponse(ResponseStatusEnum.SUCCESS)
 	}
 
-	override fun update(id: Int, luwakDto: ILuwakDto<City>?): Boolean {
+	override fun update(id: Int, luwakDto: ILuwakDto<City>?): CrudResponse {
 		val dto = luwakDto as CityViewModel
 
-		val model = cities.find { it.id == id } ?: return false
+		val model = cities.find { it.id == id } ?: return CrudResponse(ResponseStatusEnum.ERROR)
 		model.name = dto.cityName
 
-		return true
+		return return CrudResponse(ResponseStatusEnum.SUCCESS)
 	}
 
-	override fun delete(id: Int, luwakDto: ILuwakDto<City>?): Boolean {
+	override fun delete(id: Int, luwakDto: ILuwakDto<City>?): CrudResponse {
 		cities = cities.filter {it.id != id}.toMutableList()
 
-		return true
+		return CrudResponse(ResponseStatusEnum.SUCCESS)
 	}
 }

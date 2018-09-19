@@ -2,6 +2,8 @@ package com.menighin.luwak.com.menighin.luwak.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.menighin.luwak.AbstractLuwakApplication;
+import com.menighin.luwak.core.dtos.CrudResponse;
+import com.menighin.luwak.core.enums.ResponseStatusEnum;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.models.AbstractLuwakPage;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 public class LuwakController {
 
     @Autowired
@@ -50,44 +53,44 @@ public class LuwakController {
 
 	@ResponseBody
 	@PostMapping(value = "/{page}/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity create(@PathVariable("page") String pageName,
-								 @RequestBody Map<String, Object> model) {
+	public ResponseEntity<CrudResponse> create(@PathVariable("page") String pageName,
+											   @RequestBody Map<String, Object> model) {
 		AbstractLuwakPage page = luwakApplication.getPage(pageName);
-		boolean created = page.create(model);
+		CrudResponse crudResponse = page.create(model);
 
-		if (created)
-			return new ResponseEntity(HttpStatus.CREATED);
+		if (crudResponse.getStatus() == ResponseStatusEnum.SUCCESS)
+			return new ResponseEntity<>(crudResponse, HttpStatus.CREATED);
 		else
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(crudResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	@ResponseBody
 	@PutMapping(value = "/{page}/update/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity edit(@PathVariable("page") String pageName,
+	public ResponseEntity<CrudResponse> edit(@PathVariable("page") String pageName,
 							   @PathVariable("id") int id,
 							   @RequestBody  Map<String, Object> model) {
 		AbstractLuwakPage page = luwakApplication.getPage(pageName);
-		boolean edited = page.editModel(id, model);
+		CrudResponse crudResponse = page.editModel(id, model);
 
-		if (edited) {
-			return new ResponseEntity(HttpStatus.OK);
-		} else {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}
+		if (crudResponse.getStatus() == ResponseStatusEnum.SUCCESS)
+			return new ResponseEntity<>(crudResponse, HttpStatus.OK);
+		else
+			return new ResponseEntity<>(crudResponse, HttpStatus.BAD_REQUEST);
+
 	}
 
 	@ResponseBody
 	@DeleteMapping(value = "/{page}/delete/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity delete(@PathVariable("page") String pageName,
+	public ResponseEntity<CrudResponse> delete(@PathVariable("page") String pageName,
 								 @PathVariable("id") int id,
 								 @RequestBody Map<String, Object> model) {
     	AbstractLuwakPage page = luwakApplication.getPage(pageName);
-    	boolean deleted = page.deleteModel(id, model);
+    	CrudResponse crudResponse = page.deleteModel(id, model);
 
-    	if (deleted)
-    		return new ResponseEntity(HttpStatus.OK);
+		if (crudResponse.getStatus() == ResponseStatusEnum.SUCCESS)
+    		return new ResponseEntity<>(crudResponse, HttpStatus.OK);
     	else
-    		return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    		return new ResponseEntity<>(crudResponse, HttpStatus.BAD_REQUEST);
 	}
 
 }

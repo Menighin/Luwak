@@ -37,7 +37,7 @@ public abstract class AbstractLuwakDataTable<M extends ILuwakModel, D extends IL
 	}
 
     public LuwakDataTableMetadataDto getMetadata() {
-    	return new LuwakDataTableMetadataDto(classDto);
+    	return new LuwakDataTableMetadataDto(this);
 	}
 
 	public ArrayList<D> getTableData(ArrayList<M> models) {
