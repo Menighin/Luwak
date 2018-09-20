@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import testapp.pages.CityPage;
+import testapp.pages.CountryCityMasterDetailPage;
 
 
 @SpringBootApplication
@@ -22,6 +23,7 @@ public class TestApplication extends AbstractLuwakApplication {
 	protected void setupApplication() {
 
 		registerPage(CityPage.class);
+		registerPage(CountryCityMasterDetailPage.class);
 
 	}
 }

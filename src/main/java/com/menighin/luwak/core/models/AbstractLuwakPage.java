@@ -21,25 +21,47 @@ import java.util.Map;
 @Component
 public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakFilter> {
 
-	@Getter
-	private Class<? extends ILuwakModel> modelClass;
+	private Class<? extends ILuwakModel> masterClass;
 
-	@Getter
 	private Class<? extends ILuwakFilter> filterClass;
 
-	@Getter
-	@Setter
 	private AbstractLuwakDataTable table;
 
-	@Getter
-	@Setter
 	private ILuwakDatasource<M, F> datasource;
+
+	public AbstractLuwakDataTable getTable() {
+		return table;
+	}
+
+	public void setFilterClass(Class<? extends ILuwakFilter> filterClass) {
+		this.filterClass = filterClass;
+	}
+
+	public void setTable(AbstractLuwakDataTable table) {
+		this.table = table;
+	}
+
+	public ILuwakDatasource<M, F> getDatasource() {
+		return datasource;
+	}
+
+	public void setDatasource(ILuwakDatasource<M, F> datasource) {
+		this.datasource = datasource;
+	}
+
+	public Class<? extends ILuwakModel> getModelClass() {
+		return masterClass;
+	}
+
+	public Class<? extends ILuwakFilter> getFilterClass() {
+		return filterClass;
+	}
 
 	// Instance initialization
 	{
 		Type superclass = getClass().getGenericSuperclass();
 		ParameterizedType parameterized = (ParameterizedType) superclass;
-		modelClass = (Class<? extends ILuwakModel>) parameterized.getActualTypeArguments()[0];
+		masterClass = (Class<? extends ILuwakModel>) parameterized.getActualTypeArguments()[0];
 		filterClass = (Class<? extends ILuwakFilter>) parameterized.getActualTypeArguments()[1];
 	}
 
