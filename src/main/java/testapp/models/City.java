@@ -1,8 +1,6 @@
 package testapp.models;
 
 import com.menighin.luwak.core.interfaces.ILuwakModel;
-import lombok.Getter;
-import lombok.Setter;
 
 public class City implements ILuwakModel {
 

@@ -1,8 +1,5 @@
 package com.menighin.luwak.core.dtos
 
-import lombok.Getter
-import lombok.Setter
-
 import java.util.ArrayList
 
 class LuwakPageMetadataDto {

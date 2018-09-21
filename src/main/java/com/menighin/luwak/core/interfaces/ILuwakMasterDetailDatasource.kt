@@ -4,7 +4,7 @@ import com.menighin.luwak.core.dtos.CrudResponse
 
 interface ILuwakMasterDetailDatasource<M : ILuwakModel, D : ILuwakModel, F : ILuwakFilter> : ILuwakDatasource<M, F> {
 
-	fun getAllDetail(page: Int, masterId: Int, filter: F) : ArrayList<D>
+	fun getAllDetail(masterId: Int, page: Int, filter: F?) : ArrayList<D>
 
 	fun updateDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<M>): CrudResponse
 

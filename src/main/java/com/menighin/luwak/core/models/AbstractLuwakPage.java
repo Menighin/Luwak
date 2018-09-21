@@ -8,8 +8,6 @@ import com.menighin.luwak.core.interfaces.ILuwakDatasource;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.interfaces.ILuwakModel;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -81,7 +79,7 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 		return pageMetadata;
 	}
 
-	public ArrayList<? extends ILuwakDto> getTableData(int page, F filter) {
+	public ArrayList<? extends ILuwakDto> getAll(int page, F filter) {
 		ArrayList<M> models = datasource.getAll(page, filter);
 		return table.getTableData(models);
 	}

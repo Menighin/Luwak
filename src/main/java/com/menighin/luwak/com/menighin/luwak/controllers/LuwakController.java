@@ -6,6 +6,7 @@ import com.menighin.luwak.core.dtos.CrudResponse;
 import com.menighin.luwak.core.enums.ResponseStatusEnum;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
+import com.menighin.luwak.core.models.AbstractLuwakMasterDetailPage;
 import com.menighin.luwak.core.models.AbstractLuwakPage;
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class LuwakController {
 		AbstractLuwakPage luwakPage = luwakApplication.getPage(pageName);
 		try {
 			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) mapper.readValue(filterJson, luwakPage.getFilterClass());
-			return luwakPage.getTableData(page == null ? 0 : page.intValue(), filter);
+			return luwakPage.getAll(page == null ? 0 : page.intValue(), filter);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -91,6 +92,24 @@ public class LuwakController {
     		return new ResponseEntity<>(crudResponse, HttpStatus.OK);
     	else
     		return new ResponseEntity<>(crudResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/{pageName}/detail/getAll")
+	public ArrayList<ILuwakDto> getDetailAll(@PathVariable("pageName") String pageName,
+											 @RequestParam(value = "masterId") Integer masterId,
+											 @RequestParam(value = "page", required = false) Integer page,
+											 @RequestParam(value = "filter", required = false) String filterJson) {
+
+		AbstractLuwakMasterDetailPage luwakPage = (AbstractLuwakMasterDetailPage) luwakApplication.getPage(pageName);
+		try {
+			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) mapper.readValue(filterJson, luwakPage.getFilterClass());
+			return luwakPage.getDetailAll(masterId, page == null ? 0 : page.intValue(), filter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 }

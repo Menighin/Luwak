@@ -5,16 +5,12 @@ import com.menighin.luwak.core.dtos.LuwakDataTableMetadataDto;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.interfaces.ILuwakModel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Map;
 
-@NoArgsConstructor
 public abstract class AbstractLuwakDataTable<M extends ILuwakModel, D extends ILuwakDto, F extends ILuwakFilter> {
 
 	private Class<M> classModel;

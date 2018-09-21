@@ -27,7 +27,6 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 		)
 	}
 
-
 	override fun getAll(page: Int, filter: CountryCityPageFilter?): java.util.ArrayList<Country> {
 		val filteredCountries =
 				countries.filter {
@@ -39,12 +38,13 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 		return filteredCountries as java.util.ArrayList<Country>
 	}
 
-	override fun getAllDetail(page: Int, masterId: Int, filter: CountryCityPageFilter): ArrayList<City> {
+	override fun getAllDetail(masterId: Int, page: Int, filter: CountryCityPageFilter?): ArrayList<City> {
 		val filteredCities =
 				cities.filter {
 					city ->
+					(city.country.id == masterId) &&
 					(filter?.id == null || filter.id == city.id) &&
-							(filter?.country == null  || filter.country == city.name)
+					(filter?.country == null  || filter.country == city.name)
 				}
 
 		return filteredCities as java.util.ArrayList<City>
