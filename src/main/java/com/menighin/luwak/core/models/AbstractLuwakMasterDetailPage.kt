@@ -1,6 +1,8 @@
 package com.menighin.luwak.core.models
 
+import com.menighin.luwak.core.dtos.CrudResponse
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto
+import com.menighin.luwak.core.enums.ResponseStatusEnum
 import com.menighin.luwak.core.interfaces.ILuwakDto
 import com.menighin.luwak.core.interfaces.ILuwakFilter
 import com.menighin.luwak.core.interfaces.ILuwakMasterDetailDatasource
@@ -35,9 +37,15 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 		return metadataDto
 	}
 
-	fun getDetailAll(masterId: Int, page: Int, filter: F?): ArrayList<out ILuwakDto<D>> {
-		val models = datasource?.getAllDetail(masterId, page, filter)
-		return detailTable?.getTableData(models) as ArrayList<out ILuwakDto<D>>
+	fun getDetailAll(masterId: Int, page: Int, filter: F?): CrudResponse<ArrayList<out ILuwakDto<D>>> {
+		val crudResponse = datasource?.getAllDetail(masterId, page, filter)
+		if (crudResponse?.status == ResponseStatusEnum.SUCCESS)
+			return CrudResponse(ResponseStatusEnum.SUCCESS,
+					detailTable?.getTableData(crudResponse.data) as ArrayList<out ILuwakDto<D>>,
+					crudResponse.validations,
+					crudResponse.msg)
+		return CrudResponse<ArrayList<out ILuwakDto<D>>>(crudResponse?.status ?: ResponseStatusEnum.ERROR, null, crudResponse?.validations, crudResponse?.msg)
+
 	}
 
 }

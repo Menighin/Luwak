@@ -79,9 +79,14 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 		return pageMetadata;
 	}
 
-	public ArrayList<? extends ILuwakDto> getAll(int page, F filter) {
-		ArrayList<M> models = datasource.getAll(page, filter);
-		return table.getTableData(models);
+	public CrudResponse<ArrayList<? extends ILuwakDto>> getAll(int page, F filter) {
+		CrudResponse<ArrayList<M>> crudResponse = datasource.getAll(page, filter);
+		if (crudResponse != null && crudResponse.getStatus() == ResponseStatusEnum.SUCCESS)
+			return new CrudResponse<ArrayList<? extends ILuwakDto>>(ResponseStatusEnum.SUCCESS,
+					table.getTableData(crudResponse.getData()),
+					crudResponse.getValidations(),
+					crudResponse.getMsg());
+		return new CrudResponse<>(ResponseStatusEnum.ERROR, null, crudResponse.getValidations(), crudResponse.getMsg());
 	}
 
 	public CrudResponse create(Map<String, Object> dtoMap) {
@@ -90,9 +95,8 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 			return datasource.create(dto);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return new CrudResponse(ResponseStatusEnum.ERROR, null, null, e.getMessage());
 		}
-
-		return new CrudResponse(ResponseStatusEnum.ERROR, null);
 	}
 
 	public CrudResponse editModel(int id, Map<String, Object> dtoMap) {
@@ -101,9 +105,8 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 			return datasource.update(id, dto);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return new CrudResponse(ResponseStatusEnum.ERROR, null, null, e.getMessage());
 		}
-
-		return new CrudResponse(ResponseStatusEnum.ERROR, null);
 	}
 
 	public CrudResponse deleteModel(int id, Map<String, Object> dtoMap) {
@@ -112,9 +115,8 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 			return datasource.delete(id, dto);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return new CrudResponse(ResponseStatusEnum.ERROR, null, null, e.getMessage());
 		}
-
-		return new CrudResponse(ResponseStatusEnum.ERROR, null);
 	}
 
 	private ILuwakDto convertMapToDto(Map<String, Object> model) throws IllegalAccessException, InstantiationException {

@@ -1,6 +1,7 @@
 package testapp.repositories
 
 import com.menighin.luwak.core.dtos.CrudResponse
+import com.menighin.luwak.core.enums.ResponseStatusEnum
 import com.menighin.luwak.core.interfaces.ILuwakDto
 import com.menighin.luwak.core.interfaces.ILuwakMasterDetailDatasource
 import org.springframework.stereotype.Repository
@@ -27,7 +28,7 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 		)
 	}
 
-	override fun getAll(page: Int, filter: CountryCityPageFilter?): java.util.ArrayList<Country> {
+	override fun getAll(page: Int, filter: CountryCityPageFilter?): CrudResponse<ArrayList<Country>> {
 		val filteredCountries =
 				countries.filter {
 					country ->
@@ -35,10 +36,10 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 							(filter?.city == null  || filter.city == country.code)
 				}
 
-		return filteredCountries as java.util.ArrayList<Country>
+		return CrudResponse(ResponseStatusEnum.SUCCESS, filteredCountries as ArrayList<Country>, null, null)
 	}
 
-	override fun getAllDetail(masterId: Int, page: Int, filter: CountryCityPageFilter?): ArrayList<City> {
+	override fun getAllDetail(masterId: Int, page: Int, filter: CountryCityPageFilter?): CrudResponse<ArrayList<City>> {
 		val filteredCities =
 				cities.filter {
 					city ->
@@ -47,31 +48,31 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 					(filter?.country == null  || filter.country == city.name)
 				}
 
-		return filteredCities as java.util.ArrayList<City>
+		return CrudResponse<ArrayList<City>>(ResponseStatusEnum.SUCCESS, filteredCities as java.util.ArrayList<City>)
 	}
 
-	override fun updateDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse {
+	override fun updateDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
-	override fun createDetail(masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse {
+	override fun createDetail(masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
-	override fun deleteDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse {
+	override fun deleteDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
 
-	override fun update(id: Int, luwakDto: ILuwakDto<Country>?): CrudResponse {
+	override fun update(id: Int, luwakDto: ILuwakDto<Country>?): CrudResponse<Void> {
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
-	override fun create(luwakDto: ILuwakDto<Country>?): CrudResponse {
+	override fun create(luwakDto: ILuwakDto<Country>?): CrudResponse<Void> {
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
-	override fun delete(id: Int, luwakDto: ILuwakDto<Country>?): CrudResponse {
+	override fun delete(id: Int, luwakDto: ILuwakDto<Country>?): CrudResponse<Void> {
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 

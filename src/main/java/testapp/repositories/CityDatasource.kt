@@ -29,7 +29,7 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 		)
 	}
 
-	override fun getAll(page: Int, filter: CityPageFilter?): ArrayList<City> {
+	override fun getAll(page: Int, filter: CityPageFilter?): CrudResponse<ArrayList<City>> {
 		val filteredCities =
 			cities.filter {
 				city ->
@@ -37,10 +37,10 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 					(filter?.name == null  || filter.name == city.name)
 			}
 
-		return filteredCities as ArrayList<City>
+		return CrudResponse(ResponseStatusEnum.SUCCESS, filteredCities as ArrayList<City>, null, null)
 	}
 
-	override fun create(luwakDto: ILuwakDto<City>): CrudResponse {
+	override fun create(luwakDto: ILuwakDto<City>): CrudResponse<Void> {
 		val dto = luwakDto as CityViewModel
 		val countryId = dto.countryName.toInt()
 		val country = countries.find { it.id == countryId }
@@ -52,7 +52,7 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 		return CrudResponse(ResponseStatusEnum.SUCCESS)
 	}
 
-	override fun update(id: Int, luwakDto: ILuwakDto<City>?): CrudResponse {
+	override fun update(id: Int, luwakDto: ILuwakDto<City>?): CrudResponse<Void> {
 		val dto = luwakDto as CityViewModel
 
 		val model = cities.find { it.id == id } ?: return CrudResponse(ResponseStatusEnum.ERROR)
@@ -61,7 +61,7 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 		return return CrudResponse(ResponseStatusEnum.SUCCESS)
 	}
 
-	override fun delete(id: Int, luwakDto: ILuwakDto<City>?): CrudResponse {
+	override fun delete(id: Int, luwakDto: ILuwakDto<City>?): CrudResponse<Void> {
 		cities = cities.filter {it.id != id}.toMutableList()
 
 		return CrudResponse(ResponseStatusEnum.SUCCESS)

@@ -30,7 +30,7 @@ public class LuwakController {
 
     @ResponseBody
     @GetMapping(value = "/{pageName}/getAll")
-    public ArrayList<ILuwakDto> getAll(@PathVariable("pageName") String pageName,
+    public CrudResponse<ArrayList<ILuwakDto>> getAll(@PathVariable("pageName") String pageName,
 									   @RequestParam(value = "page", required = false) Integer page,
 									   @RequestParam(value = "filter", required = false) String filterJson) {
 
@@ -96,7 +96,7 @@ public class LuwakController {
 
 	@ResponseBody
 	@GetMapping(value = "/{pageName}/detail/getAll")
-	public ArrayList<ILuwakDto> getDetailAll(@PathVariable("pageName") String pageName,
+	public CrudResponse<ArrayList<ILuwakDto>> getDetailAll(@PathVariable("pageName") String pageName,
 											 @RequestParam(value = "masterId") Integer masterId,
 											 @RequestParam(value = "page", required = false) Integer page,
 											 @RequestParam(value = "filter", required = false) String filterJson) {
