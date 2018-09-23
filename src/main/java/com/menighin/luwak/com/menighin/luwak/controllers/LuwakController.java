@@ -28,6 +28,13 @@ public class LuwakController {
 	@Autowired
 	private ObjectMapper mapper;
 
+	@ResponseBody
+	@GetMapping(value = "/{page}/meta")
+	public LuwakPageMetadataDto getMetadata(@PathVariable("page") String pageName) {
+		AbstractLuwakPage page = luwakApplication.getPage(pageName);
+		return page.getPageMetadata();
+	}
+
     @ResponseBody
     @GetMapping(value = "/{pageName}/getAll")
     public CrudResponse<ArrayList<ILuwakDto>> getAll(@PathVariable("pageName") String pageName,
@@ -44,13 +51,6 @@ public class LuwakController {
 
 		return null;
     }
-
-    @ResponseBody
-	@GetMapping(value = "/{page}/meta")
-	public LuwakPageMetadataDto getMetadata(@PathVariable("page") String pageName) {
-		AbstractLuwakPage page = luwakApplication.getPage(pageName);
-		return page.getPageMetadata();
-	}
 
 	@ResponseBody
 	@PostMapping(value = "/{page}/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -95,6 +95,19 @@ public class LuwakController {
 	}
 
 	@ResponseBody
+	@GetMapping(value = "/{page}/count")
+	public ResponseEntity<CrudResponse<Integer>> count(@PathVariable("page") String pageName) {
+		AbstractLuwakPage luwakPage = luwakApplication.getPage(pageName);
+		try {
+			return new ResponseEntity<CrudResponse<Integer>>(luwakPage.count(), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	@ResponseBody
 	@GetMapping(value = "/{pageName}/detail/getAll")
 	public CrudResponse<ArrayList<ILuwakDto>> getDetailAll(@PathVariable("pageName") String pageName,
 											 @RequestParam(value = "masterId") Integer masterId,
@@ -105,6 +118,19 @@ public class LuwakController {
 		try {
 			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) mapper.readValue(filterJson, luwakPage.getFilterClass());
 			return luwakPage.getDetailAll(masterId, page == null ? 0 : page.intValue(), filter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/{page}/detail/count")
+	public ResponseEntity<CrudResponse<Integer>> countDetail(@PathVariable("page") String pageName, @RequestParam(value = "masterId") Integer masterId) {
+		AbstractLuwakMasterDetailPage luwakPage = (AbstractLuwakMasterDetailPage) luwakApplication.getPage(pageName);
+		try {
+			return new ResponseEntity<CrudResponse<Integer>>(luwakPage.countDetail(masterId), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

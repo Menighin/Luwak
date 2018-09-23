@@ -58,12 +58,16 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 		val model = cities.find { it.id == id } ?: return CrudResponse(ResponseStatusEnum.ERROR)
 		model.name = dto.cityName
 
-		return return CrudResponse(ResponseStatusEnum.SUCCESS)
+		return CrudResponse(ResponseStatusEnum.SUCCESS)
 	}
 
 	override fun delete(id: Int, luwakDto: ILuwakDto<City>?): CrudResponse<Void> {
 		cities = cities.filter {it.id != id}.toMutableList()
 
 		return CrudResponse(ResponseStatusEnum.SUCCESS)
+	}
+
+	override fun count(): CrudResponse<Int> {
+		return CrudResponse(ResponseStatusEnum.SUCCESS, cities.count())
 	}
 }

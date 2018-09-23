@@ -9,6 +9,8 @@ import testapp.filters.CityPageFilter
 import testapp.filters.CountryCityPageFilter
 import testapp.models.City
 import testapp.models.Country
+import testapp.viewModels.CityViewModel
+import testapp.viewModels.CountryViewModel
 
 @Repository
 open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, CountryCityPageFilter> {
@@ -51,29 +53,62 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 		return CrudResponse<ArrayList<City>>(ResponseStatusEnum.SUCCESS, filteredCities as java.util.ArrayList<City>)
 	}
 
-	override fun updateDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-	}
-
-	override fun createDetail(masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-	}
-
-	override fun deleteDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-	}
-
-
-	override fun update(id: Int, luwakDto: ILuwakDto<Country>?): CrudResponse<Void> {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+	override fun count(): CrudResponse<Int> {
+		return CrudResponse(ResponseStatusEnum.SUCCESS, countries.count())
 	}
 
 	override fun create(luwakDto: ILuwakDto<Country>?): CrudResponse<Void> {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		val dto = luwakDto as CountryViewModel
+		var lastId = countries.sortedBy { it.id }.last().id
+		val newCountry = Country(++lastId, dto.name)
+
+		countries.add(newCountry)
+
+		return CrudResponse(ResponseStatusEnum.SUCCESS)
 	}
 
+	override fun update(id: Int, luwakDto: ILuwakDto<Country>?): CrudResponse<Void> {
+		val dto = luwakDto as CountryViewModel
+
+		val model = countries.find { it.id == id } ?: return CrudResponse(ResponseStatusEnum.ERROR)
+		model.code = dto.name
+
+		return CrudResponse(ResponseStatusEnum.SUCCESS)
+	}
+
+
 	override fun delete(id: Int, luwakDto: ILuwakDto<Country>?): CrudResponse<Void> {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		countries = countries.filter {it.id != id}.toMutableList()
+		return CrudResponse(ResponseStatusEnum.SUCCESS)
+	}
+
+	override fun updateDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
+		val dto = luwakDto as CityViewModel
+
+		val model = cities.find { it.id == id && it.country.id == masterId } ?: return CrudResponse(ResponseStatusEnum.ERROR)
+		model.name = dto.cityName
+
+		return CrudResponse(ResponseStatusEnum.SUCCESS)
+	}
+
+	override fun createDetail(masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
+		val dto = luwakDto as CityViewModel
+		var lastId = countries.sortedBy { it.id }.last().id
+		val country = countries.find { it.id == masterId }
+		val newCity = City(++lastId, dto.cityName, country)
+
+		cities.add(newCity)
+
+		return CrudResponse(ResponseStatusEnum.SUCCESS)
+	}
+
+	override fun deleteDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
+		cities = cities.filter {it.id != id}.toMutableList()
+		return CrudResponse(ResponseStatusEnum.SUCCESS)
+	}
+
+	override fun countDetail(masterId: Int): CrudResponse<Int> {
+		return CrudResponse(ResponseStatusEnum.SUCCESS, cities.find{it.country.id == masterId}.count())
 	}
 
 }

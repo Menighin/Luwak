@@ -45,7 +45,10 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 					crudResponse.validations,
 					crudResponse.msg)
 		return CrudResponse<ArrayList<out ILuwakDto<D>>>(crudResponse?.status ?: ResponseStatusEnum.ERROR, null, crudResponse?.validations, crudResponse?.msg)
+	}
 
+	fun countDetail(masterId: Int): CrudResponse<Int> {
+		return datasource?.countDetail() ?: CrudResponse(ResponseStatusEnum.ERROR)
 	}
 
 }

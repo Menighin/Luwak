@@ -89,6 +89,10 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 		return new CrudResponse<>(ResponseStatusEnum.ERROR, null, crudResponse.getValidations(), crudResponse.getMsg());
 	}
 
+	public CrudResponse<Integer> count() {
+		return datasource.count();
+	}
+
 	public CrudResponse create(Map<String, Object> dtoMap) {
 		try {
 			ILuwakDto dto = convertMapToDto(dtoMap);
