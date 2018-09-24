@@ -20,10 +20,9 @@ import java.util.Map;
 public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakFilter> {
 
 	private Class<? extends ILuwakModel> masterClass;
-
 	private Class<? extends ILuwakFilter> filterClass;
 
-	private AbstractLuwakDataTable table;
+	private AbstractLuwakDataTable<M, ?> table;
 
 	private ILuwakDatasource<M, F> datasource;
 
@@ -140,6 +139,7 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 
 		return dto;
 	}
+
 
 
 }

@@ -108,7 +108,7 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 	}
 
 	override fun countDetail(masterId: Int): CrudResponse<Int> {
-		return CrudResponse(ResponseStatusEnum.SUCCESS, cities.find{it.country.id == masterId}.count())
+		return CrudResponse(ResponseStatusEnum.SUCCESS, cities.asSequence().filter{it.country.id == masterId}.count())
 	}
 
 }

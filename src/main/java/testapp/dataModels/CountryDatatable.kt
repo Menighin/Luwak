@@ -7,6 +7,6 @@ import testapp.models.Country
 import testapp.viewModels.CountryViewModel
 
 @LuwakTable(title = "Country", canCreate = true, canDelete = true, canEdit = true)
-class CountryDatatable : AbstractLuwakDataTable<Country, CountryViewModel, CountryCityPageFilter>() {
+class CountryDatatable : AbstractLuwakDataTable<Country, CountryViewModel>() {
 
 }

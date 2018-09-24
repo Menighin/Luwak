@@ -7,7 +7,7 @@ import testapp.models.City;
 import testapp.viewModels.CityViewModel;
 
 @LuwakTable(title = "City", canCreate = true, canDelete = true, canEdit = true)
-public class CityDataTable extends AbstractLuwakDataTable<City, CityViewModel, CityPageFilter> {
+public class CityDataTable extends AbstractLuwakDataTable<City, CityViewModel> {
 	public CityDataTable() {
 		super();
 	}

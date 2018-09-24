@@ -1,4 +1,4 @@
-package com.menighin.luwak.com.menighin.luwak.controllers;
+package com.menighin.luwak.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.menighin.luwak.AbstractLuwakApplication;
@@ -9,6 +9,7 @@ import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.models.AbstractLuwakMasterDetailPage;
 import com.menighin.luwak.core.models.AbstractLuwakPage;
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class LuwakController {
+public class LuwakPageController {
 
     @Autowired
 	private AbstractLuwakApplication luwakApplication;
@@ -77,7 +78,6 @@ public class LuwakController {
 			return new ResponseEntity<>(crudResponse, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(crudResponse, HttpStatus.BAD_REQUEST);
-
 	}
 
 	@ResponseBody

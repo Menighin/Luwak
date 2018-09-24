@@ -13,7 +13,7 @@ import java.util.ArrayList
 abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F : ILuwakFilter> : AbstractLuwakPage<M, F>() {
 
 	var detailClass: Class<out ILuwakModel>? = null
-	var detailTable: AbstractLuwakDataTable<D,*,*>? = null
+	var detailTable: AbstractLuwakDataTable<D,*>? = null
 	var datasource: ILuwakMasterDetailDatasource<M, D, F>?
 		set(value) {
 			super.setDatasource(value)
@@ -41,14 +41,14 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 		val crudResponse = datasource?.getAllDetail(masterId, page, filter)
 		if (crudResponse?.status == ResponseStatusEnum.SUCCESS)
 			return CrudResponse(ResponseStatusEnum.SUCCESS,
-					detailTable?.getTableData(crudResponse.data) as ArrayList<out ILuwakDto<D>>,
+					detailTable?.getTableData(crudResponse.data!!) as ArrayList<out ILuwakDto<D>>,
 					crudResponse.validations,
 					crudResponse.msg)
 		return CrudResponse<ArrayList<out ILuwakDto<D>>>(crudResponse?.status ?: ResponseStatusEnum.ERROR, null, crudResponse?.validations, crudResponse?.msg)
 	}
 
 	fun countDetail(masterId: Int): CrudResponse<Int> {
-		return datasource?.countDetail() ?: CrudResponse(ResponseStatusEnum.ERROR)
+		return datasource?.countDetail(masterId) ?: CrudResponse(ResponseStatusEnum.ERROR)
 	}
 
 }

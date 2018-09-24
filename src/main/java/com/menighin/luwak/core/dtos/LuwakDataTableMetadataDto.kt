@@ -16,7 +16,7 @@ class LuwakDataTableMetadataDto {
 	var canDelete: Boolean = true
 	var columns: ArrayList<ColumnMetadataDto> = ArrayList()
 
-	constructor(table: AbstractLuwakDataTable<*, *, *>) {
+	constructor(table: AbstractLuwakDataTable<*, *>) {
 
 		val dtoClass = table.classDto
 		val tableClass = table.javaClass
@@ -32,7 +32,7 @@ class LuwakDataTableMetadataDto {
 		canDelete = luwakTableAnnotation.canDelete
 		canEdit = luwakTableAnnotation.canEdit
 
-		val fields = dtoClass.declaredFields
+		val fields = dtoClass!!.declaredFields
 
 		// Iterate through fields generating the metadata
 		for (f in fields) {
