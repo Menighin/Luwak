@@ -8,6 +8,7 @@ import com.menighin.luwak.core.interfaces.ILuwakDatasource;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.interfaces.ILuwakModel;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -138,6 +139,13 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 		}
 
 		return dto;
+	}
+
+	public XSSFWorkbook getExcelFile() {
+		CrudResponse<ArrayList<M>> crudResponse = datasource.getAll(null, null);
+		if (crudResponse != null && crudResponse.getStatus() == ResponseStatusEnum.SUCCESS)
+			return this.table.toExcel(crudResponse.getData());
+		return null;
 	}
 
 

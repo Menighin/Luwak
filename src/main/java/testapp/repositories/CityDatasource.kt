@@ -29,7 +29,7 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 		)
 	}
 
-	override fun getAll(page: Int, filter: CityPageFilter?): CrudResponse<ArrayList<City>> {
+	override fun getAll(page: Int?, filter: CityPageFilter?): CrudResponse<ArrayList<City>> {
 		val filteredCities =
 			cities.filter {
 				city ->

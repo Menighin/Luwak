@@ -9,7 +9,10 @@ import com.menighin.luwak.core.enums.ColumnTypeEnum
 import com.menighin.luwak.core.interfaces.ILuwakDto
 import com.menighin.luwak.core.interfaces.ILuwakFilter
 import com.menighin.luwak.core.interfaces.ILuwakModel
+import org.apache.poi.ss.formula.functions.Index
+import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.IndexedColors
+import org.apache.poi.xssf.usermodel.XSSFColor
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 
 import java.lang.reflect.ParameterizedType
@@ -72,10 +75,10 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto<M>> {
 	/**
 	 * Converts this Luwak table to an excel file respecting the DTO model
 	 */
-	fun toExcel(models: ArrayList<M>) : XSSFWorkbook{
+	fun toExcel(models: ArrayList<M>) : XSSFWorkbook {
 
 		// Check if annotation is correct
-		if (this::class.java.isAnnotationPresent(LuwakTable::class.java))
+		if (!this::class.java.isAnnotationPresent(LuwakTable::class.java))
 			throw Exception("Table not annotated with @LuwakTable")
 
 		val dtos = this.getTableData(models)
@@ -96,12 +99,12 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto<M>> {
 		// Styling header
 		val headerFont = workbook.createFont()
 		headerFont.bold = true
-		headerFont.fontHeightInPoints = 14
 		headerFont.color = IndexedColors.WHITE.index
 
 		val headerCellStyle = workbook.createCellStyle()
 		headerCellStyle.setFont(headerFont)
-		headerCellStyle.fillBackgroundColor = IndexedColors.DARK_GREEN.index
+		headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
+		headerCellStyle.setFillForegroundColor(XSSFColor(byteArrayOf(111, 44, 163.toByte()), null))
 
 		// Creating and filling header row
 		val headerRow = sheet.createRow(0)
@@ -130,7 +133,9 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto<M>> {
 				if (field.isAnnotationPresent(ColumnType::class.java))
 					columnType = field.getAnnotation(ColumnType::class.java).value
 
+				field.isAccessible = true
 				val value = field.get(dto)
+				field.isAccessible = false
 
 				val cell = row.createCell(i)
 				cell.setCellValue(value.toString())
