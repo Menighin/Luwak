@@ -23,7 +23,7 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 			return super.getDatasource() as ILuwakMasterDetailDatasource<M, D, F>?
 		}
 
-	var masterFields: List<String> = ArrayList()
+//	var masterFields: List<String> = ArrayList()
 
 	init {
 		val superclass = javaClass.genericSuperclass
@@ -31,6 +31,8 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 		detailClass = parameterized.actualTypeArguments[1] as Class<out ILuwakModel>
 		filterClass = parameterized.actualTypeArguments[2] as Class<out ILuwakFilter>
 	}
+
+	abstract fun getMasterFields() : ArrayList<String>
 
 	override fun getPageMetadata(): LuwakPageMetadataDto {
 		val metadataDto = super.getPageMetadata()
@@ -54,12 +56,12 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 		return datasource?.countDetail(masterId) ?: CrudResponse(ResponseStatusEnum.ERROR)
 	}
 
-	fun getExcelDetailFile(masterId: Int): XSSFWorkbook? {
-		val crudResponse = datasource?.getAll(null, null)
+	fun getExcelDetailFile(masterId: Int): XSSFWorkbook {
+		val crudResponse = datasource?.getAllDetail(masterId, null, null)
 		val masterModel = datasource?.getById(masterId)
 		return if (crudResponse != null && crudResponse.status === ResponseStatusEnum.SUCCESS && masterModel != null)
-				this.table.toExcelDetail(crudResponse.data!!, masterModel.data!!, this)
-			else null
+				this.detailTable!!.toExcelDetail(crudResponse.data!!, masterModel.data!!, this)
+			else XSSFWorkbook()
 	}
 
 }

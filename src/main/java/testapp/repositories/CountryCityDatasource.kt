@@ -30,6 +30,10 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 		)
 	}
 
+	override fun getById(id: Int): CrudResponse<Country> {
+		return CrudResponse(ResponseStatusEnum.SUCCESS, countries.find { it.id == id })
+	}
+
 	override fun getAll(page: Int?, filter: CountryCityPageFilter?): CrudResponse<ArrayList<Country>> {
 		val filteredCountries =
 				countries.filter {
@@ -41,7 +45,7 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 		return CrudResponse(ResponseStatusEnum.SUCCESS, filteredCountries as ArrayList<Country>, null, null)
 	}
 
-	override fun getAllDetail(masterId: Int, page: Int, filter: CountryCityPageFilter?): CrudResponse<ArrayList<City>> {
+	override fun getAllDetail(masterId: Int, page: Int?, filter: CountryCityPageFilter?): CrudResponse<ArrayList<City>> {
 		val filteredCities =
 				cities.filter {
 					city ->

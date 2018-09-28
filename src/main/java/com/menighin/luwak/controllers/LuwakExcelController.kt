@@ -47,7 +47,7 @@ open class LuwakExcelController {
 		val page = luwakApplication?.getPage(pageName) as AbstractLuwakMasterDetailPage<*, *, *>
 
 		if (page != null) {
-			val wb = page.excelFile
+			val wb = page.getExcelDetailFile(masterId)
 			val filename = "${wb.getSheetName(0)}.xlsx";
 			val file = File("${wb.getSheetName(0)}.xlsx")
 			val fileStream = FileOutputStream(file)

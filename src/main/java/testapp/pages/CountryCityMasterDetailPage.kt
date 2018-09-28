@@ -9,10 +9,15 @@ import testapp.filters.CountryCityPageFilter
 import testapp.models.City
 import testapp.models.Country
 import testapp.repositories.CountryCityDatasource
+import testapp.viewModels.CountryViewModel
+import java.util.ArrayList
 import javax.annotation.PostConstruct
 
 @Component
 class CountryCityMasterDetailPage : AbstractLuwakMasterDetailPage<Country, City, CountryCityPageFilter>() {
+	override fun getMasterFields(): ArrayList<String> {
+		return arrayListOf(CountryViewModel::name.name)
+	}
 
 	@Autowired
 	var countryCityDatasource: CountryCityDatasource? = null
