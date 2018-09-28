@@ -7,6 +7,7 @@ import com.menighin.luwak.core.interfaces.ILuwakDto
 import com.menighin.luwak.core.interfaces.ILuwakFilter
 import com.menighin.luwak.core.interfaces.ILuwakMasterDetailDatasource
 import com.menighin.luwak.core.interfaces.ILuwakModel
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.lang.reflect.ParameterizedType
 import java.util.ArrayList
 
@@ -21,6 +22,8 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 		get() {
 			return super.getDatasource() as ILuwakMasterDetailDatasource<M, D, F>?
 		}
+
+	var masterFields: List<String> = ArrayList()
 
 	init {
 		val superclass = javaClass.genericSuperclass
@@ -49,6 +52,14 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 
 	fun countDetail(masterId: Int): CrudResponse<Int> {
 		return datasource?.countDetail(masterId) ?: CrudResponse(ResponseStatusEnum.ERROR)
+	}
+
+	fun getExcelDetailFile(masterId: Int): XSSFWorkbook? {
+		val crudResponse = datasource?.getAll(null, null)
+		val masterModel = datasource?.getById(masterId)
+		return if (crudResponse != null && crudResponse.status === ResponseStatusEnum.SUCCESS && masterModel != null)
+				this.table.toExcelDetail(crudResponse.data!!, masterModel.data!!, this)
+			else null
 	}
 
 }

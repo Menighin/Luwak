@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 public interface ILuwakDatasource<M extends ILuwakModel, F extends ILuwakFilter> {
 
+	CrudResponse<M> getById(int id);
+
 	CrudResponse<ArrayList<M>> getAll(Integer page, F filter);
 
 	CrudResponse create(ILuwakDto<M> luwakDto);

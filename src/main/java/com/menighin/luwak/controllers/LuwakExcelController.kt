@@ -1,6 +1,7 @@
 package com.menighin.luwak.controllers
 
 import com.menighin.luwak.AbstractLuwakApplication
+import com.menighin.luwak.core.models.AbstractLuwakMasterDetailPage
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.FileSystemResource
 import org.springframework.http.HttpStatus
@@ -21,7 +22,30 @@ open class LuwakExcelController {
 	@GetMapping(value = "/{pageName}/export", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
 	fun export(@PathVariable pageName: String) : ResponseEntity<FileSystemResource> {
 		val page = luwakApplication?.getPage(pageName)
-		
+
+		if (page != null) {
+			val wb = page.excelFile
+			val filename = "${wb.getSheetName(0)}.xlsx";
+			val file = File("${wb.getSheetName(0)}.xlsx")
+			val fileStream = FileOutputStream(file)
+			wb.write(fileStream)
+			wb.close()
+
+			return ResponseEntity.ok()
+					.header("Content-Disposition", "attachment; filename=$filename")
+					.contentLength(file.length())
+					.lastModified(file.lastModified())
+					.body(FileSystemResource(file))
+		}
+
+		return ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/{pageName}/detail/export", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+	fun exportDetail(@PathVariable pageName: String, @RequestParam(value = "masterId") masterId: Int) : ResponseEntity<FileSystemResource> {
+		val page = luwakApplication?.getPage(pageName) as AbstractLuwakMasterDetailPage<*, *, *>
+
 		if (page != null) {
 			val wb = page.excelFile
 			val filename = "${wb.getSheetName(0)}.xlsx";
