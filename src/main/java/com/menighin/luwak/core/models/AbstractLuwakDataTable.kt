@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.IndexedColors
 import org.apache.poi.xssf.usermodel.XSSFColor
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import java.lang.reflect.Field
 
 import java.lang.reflect.ParameterizedType
 import java.util.ArrayList
@@ -89,71 +90,8 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto<M>> {
 		val excelFields = dtoFields.filter { f -> f.isAnnotationPresent(Label::class.java) }
 		val headerLabels = excelFields.map { f -> f.getAnnotation(Label::class.java).value }
 
-		// Setting up workbook
-		val workbook = XSSFWorkbook()
-		val createHelper = workbook.creationHelper
-
-		// Creating sheet
-		val sheet = workbook.createSheet(tableTitle)
-
-		// Styling header
-		val headerFont = workbook.createFont()
-		headerFont.bold = true
-		headerFont.color = IndexedColors.WHITE.index
-
-		val headerCellStyle = workbook.createCellStyle()
-		headerCellStyle.setFont(headerFont)
-		headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
-		headerCellStyle.setFillForegroundColor(XSSFColor(byteArrayOf(111, 44, 163.toByte()), null))
-
-		// Creating and filling header row
-		val headerRow = sheet.createRow(0)
-
-		for (i in 0 until headerLabels.size) {
-			val cell = headerRow.createCell(i)
-			cell.setCellValue(headerLabels[i])
-			cell.cellStyle = headerCellStyle
-		}
-
-		// Create another helper cellstyles
-		val dateCellStyle = workbook.createCellStyle()
-		dateCellStyle.dataFormat = createHelper.createDataFormat().getFormat("dd/MM/yyyy")
-
-		val dateTimeCellStyle = workbook.createCellStyle()
-		dateTimeCellStyle.dataFormat = createHelper.createDataFormat().getFormat("dd/MM/yyyy HH:mm:ss")
-
-		// Filling the worksheet with data
-		var rowNum = 1
-		for (dto in dtos) {
-			val row = sheet.createRow(rowNum++)
-
-			// Filling columns
-			for ((i, field) in excelFields.withIndex()) {
-				var columnType = ColumnTypeEnum.TEXT
-				if (field.isAnnotationPresent(ColumnType::class.java))
-					columnType = field.getAnnotation(ColumnType::class.java).value
-
-				field.isAccessible = true
-				val value = field.get(dto)
-				field.isAccessible = false
-
-				val cell = row.createCell(i)
-				cell.setCellValue(value.toString())
-
-				if (columnType == ColumnTypeEnum.DATE)
-					cell.cellStyle = dateCellStyle
-				else if (columnType == ColumnTypeEnum.DATETIME)
-					cell.cellStyle = dateTimeCellStyle
-			}
-		}
-
-		// Resize columns to fit values
-		for (i in 0 until headerLabels.size)
-			sheet.autoSizeColumn(i)
-
-		return workbook
+		return createWorkbook(tableTitle, headerLabels, excelFields, dtos, null, null)
 	}
-
 
 	fun toExcelDetail(models: ArrayList<M>, masterModel: ILuwakModel, page: AbstractLuwakMasterDetailPage<*, *, *>) : XSSFWorkbook {
 		// Check if annotation is correct
@@ -163,16 +101,22 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto<M>> {
 		val tableTitle = this::class.java.getAnnotation(LuwakTable::class.java).title
 
 		val dtos = this.getTableData(models)
-		val masterDto = page.table.getTableData(arrayListOf(masterModel)).first()
+		val masterDto = page.table.getTableData(arrayListOf(masterModel)).first() as ILuwakDto<*>
 
 		val masterDtoClass = page.table.classDto!!
 
 		// Get the fields from both master and detail table
-		var excelFields = masterDtoClass.declaredFields
+		val excelFields = masterDtoClass.declaredFields
 				.filter { it.isAnnotationPresent(Label::class.java) && page.getMasterFields().contains(it.name) } as ArrayList
 
 		excelFields.addAll(this.classDto!!.declaredFields.filter { it.isAnnotationPresent(Label::class.java)})
 		val headerLabels = excelFields.map { f -> f.getAnnotation(Label::class.java).value }
+
+		return createWorkbook(tableTitle, headerLabels, excelFields, dtos, masterDtoClass, masterDto)
+
+	}
+
+	private fun createWorkbook(tableTitle: String, headerLabels: List<String>, excelFields: List<Field>, dtos: List<ILuwakDto<M>>, masterDtoClass : Class<*>?, masterDto: ILuwakDto<*>?) : XSSFWorkbook {
 
 		// Setting up workbook
 		val workbook = XSSFWorkbook()
@@ -237,5 +181,6 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto<M>> {
 			sheet.autoSizeColumn(i)
 
 		return workbook
+
 	}
 }
