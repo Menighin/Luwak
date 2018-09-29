@@ -11,12 +11,14 @@ import com.menighin.luwak.core.models.AbstractLuwakPage;
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 
 @RestController
@@ -136,6 +138,15 @@ public class LuwakPageController {
 		}
 
 		return null;
+	}
+
+	@Autowired
+	private MessageSource messageSource;
+
+	@ResponseBody
+	@GetMapping("/i18nTest")
+	public String test(Locale loc) {
+		return messageSource.getMessage("msg.testing", null, loc);
 	}
 
 }
