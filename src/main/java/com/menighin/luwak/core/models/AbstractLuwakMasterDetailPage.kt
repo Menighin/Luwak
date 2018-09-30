@@ -37,7 +37,7 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 	override fun getPageMetadata(): LuwakPageMetadataDto {
 		val metadataDto = super.getPageMetadata()
 
-		metadataDto.slaveTable = detailTable?.metadata
+		metadataDto.slaveTable = detailTable?.getMetadata(messageSource)
 
 		return metadataDto
 	}

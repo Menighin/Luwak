@@ -10,12 +10,12 @@ import testapp.models.Country;
 
 public class CityViewModel implements ILuwakDto<City> {
 
-    @Label("City")
+    @Label("luwak.city.name")
     @MapModel(City.NAME)
 	@ColumnType(ColumnTypeEnum.TEXT)
     private String cityName;
 
-    @Label("Country")
+    @Label("luwak.city.country")
 	@MapModel(City.COUNTRY + "." + Country.CODE)
 	@ColumnType(ColumnTypeEnum.SELECT)
     private String countryName;

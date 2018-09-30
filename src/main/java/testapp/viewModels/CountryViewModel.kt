@@ -9,7 +9,7 @@ import testapp.models.Country
 
 class CountryViewModel : ILuwakDto<Country> {
 
-	@Label("Name")
+	@Label("luwak.country.name")
 	@MapModel(Country.CODE)
 	@ColumnType(ColumnTypeEnum.TEXT)
 	var name: String? = null

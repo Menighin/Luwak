@@ -5,7 +5,9 @@ import com.menighin.luwak.core.annotations.Label
 import com.menighin.luwak.core.annotations.LuwakTable
 import com.menighin.luwak.core.enums.ColumnTypeEnum
 import com.menighin.luwak.core.models.AbstractLuwakDataTable
-import java.util.ArrayList
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.MessageSource
+import java.util.*
 
 class LuwakDataTableMetadataDto {
 
@@ -16,7 +18,7 @@ class LuwakDataTableMetadataDto {
 	var canDelete: Boolean = true
 	var columns: ArrayList<ColumnMetadataDto> = ArrayList()
 
-	constructor(table: AbstractLuwakDataTable<*, *>) {
+	constructor(table: AbstractLuwakDataTable<*, *>, messageSource: MessageSource) {
 
 		val dtoClass = table.classDto
 		val tableClass = table.javaClass
@@ -38,11 +40,11 @@ class LuwakDataTableMetadataDto {
 		for (f in fields) {
 			if (!f.isAnnotationPresent(Label::class.java)) continue
 
-			val label = f.getAnnotation(Label::class.java)
+			val label = messageSource.getMessage(f.getAnnotation(Label::class.java).value, null, Locale("pt"))
 			val columnType = f.getAnnotation(ColumnType::class.java)
 			val columnTypeEnum = columnType?.value ?: ColumnTypeEnum.TEXT
 
-			columns.add(ColumnMetadataDto(f.name, label.value, columnTypeEnum))
+			columns.add(ColumnMetadataDto(f.name, label, columnTypeEnum))
 		}
 	}
 

@@ -9,6 +9,8 @@ import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.interfaces.ILuwakModel;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -19,6 +21,9 @@ import java.util.Map;
 
 @Component
 public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakFilter> {
+
+	@Autowired
+	protected MessageSource messageSource;
 
 	private Class<? extends ILuwakModel> masterClass;
 	private Class<? extends ILuwakFilter> filterClass;
@@ -72,7 +77,7 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 		LuwakPageMetadataDto pageMetadata = new LuwakPageMetadataDto();
 
 		if (table != null)
-			pageMetadata.setMasterTable(table.getMetadata());
+			pageMetadata.setMasterTable(table.getMetadata(messageSource));
 
 		pageMetadata.setFilters(LuwakFilterMetadataDto.Companion.getFiltersFrom(filterClass));
 

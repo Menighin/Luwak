@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.IndexedColors
 import org.apache.poi.xssf.usermodel.XSSFColor
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.springframework.context.MessageSource
 import java.lang.reflect.Field
 
 import java.lang.reflect.ParameterizedType
@@ -26,8 +27,9 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto<M>> {
 	var classDto: Class<D>? = null
 		private set
 
-	val metadata: LuwakDataTableMetadataDto
-		get() = LuwakDataTableMetadataDto(this)
+	fun getMetadata(messageSource: MessageSource): LuwakDataTableMetadataDto {
+		return LuwakDataTableMetadataDto(this, messageSource)
+	}
 
 	// Instance initialization
 	init {
