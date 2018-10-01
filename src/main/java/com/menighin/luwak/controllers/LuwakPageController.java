@@ -9,7 +9,7 @@ import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.models.AbstractLuwakMasterDetailPage;
 import com.menighin.luwak.core.models.AbstractLuwakPage;
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto;
-import org.apache.poi.ss.usermodel.Workbook;
+import kotlin.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -36,6 +37,21 @@ public class LuwakPageController {
 	public LuwakPageMetadataDto getMetadata(@PathVariable("page") String pageName) {
 		AbstractLuwakPage page = luwakApplication.getPage(pageName);
 		return page.getPageMetadata();
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/{pageName}/filterOptions")
+	public CrudResponse<List<Pair<Integer, String>>> getFilterOptions(@PathVariable("pageName") String pageName,
+																	  @RequestParam(value = "field", required = false) String field,
+																	  @RequestParam(value = "input", required = false) String input) {
+		AbstractLuwakPage page = luwakApplication.getPage(pageName);
+
+		try {
+			List<Pair<Integer, String>> options = page.getFilterValues(field, input);
+			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, options, null, null);
+		} catch (Exception e) {
+			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, null, e.getMessage());
+		}
 	}
 
     @ResponseBody

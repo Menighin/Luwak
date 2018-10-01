@@ -8,6 +8,7 @@ import com.menighin.luwak.core.interfaces.ILuwakDatasource;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.interfaces.ILuwakModel;
+import kotlin.Pair;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -17,6 +18,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -82,6 +84,17 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 		pageMetadata.setFilters(LuwakFilterMetadataDto.Companion.getFiltersFrom(filterClass));
 
 		return pageMetadata;
+	}
+
+	/**
+	 * Responsible for generating the list of options for a given field.
+	 * Must be overridden by pages having auto-complete fields
+	 * @param field Name of the field
+	 * @param input The value the user has input in order to filter the options
+	 * @return the list of options for a given field
+	 */
+	public List<Pair<Integer, String>> getFilterValues(String field, String input) {
+		return new ArrayList<>();
 	}
 
 	public CrudResponse<ArrayList<? extends ILuwakDto>> getAll(int page, F filter) {
