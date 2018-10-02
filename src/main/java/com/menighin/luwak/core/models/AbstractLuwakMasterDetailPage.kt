@@ -7,6 +7,7 @@ import com.menighin.luwak.core.interfaces.ILuwakDto
 import com.menighin.luwak.core.interfaces.ILuwakFilter
 import com.menighin.luwak.core.interfaces.ILuwakMasterDetailDatasource
 import com.menighin.luwak.core.interfaces.ILuwakModel
+import com.menighin.luwak.exceptions.CrudException
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.lang.reflect.ParameterizedType
 import java.util.ArrayList
@@ -42,26 +43,23 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 		return metadataDto
 	}
 
-	fun getDetailAll(masterId: Int, page: Int, filter: F?): CrudResponse<ArrayList<out ILuwakDto<D>>> {
-		val crudResponse = datasource?.getAllDetail(masterId, page, filter)
-		if (crudResponse?.status == ResponseStatusEnum.SUCCESS)
-			return CrudResponse(ResponseStatusEnum.SUCCESS,
-					detailTable?.getTableData(crudResponse.data!!) as ArrayList<out ILuwakDto<D>>,
-					crudResponse.validations,
-					crudResponse.msg)
-		return CrudResponse<ArrayList<out ILuwakDto<D>>>(crudResponse?.status ?: ResponseStatusEnum.ERROR, null, crudResponse?.validations, crudResponse?.msg)
+	@Throws(CrudException::class)
+	fun getDetailAll(masterId: Int, page: Int, filter: F?): ArrayList<out ILuwakDto<D>> {
+		val models = datasource?.getAllDetail(masterId, page, filter)
+
+		return detailTable?.getTableData(models!!) as ArrayList<out ILuwakDto<D>>
 	}
 
-	fun countDetail(masterId: Int): CrudResponse<Int> {
-		return datasource?.countDetail(masterId) ?: CrudResponse(ResponseStatusEnum.ERROR)
+	@Throws(CrudException::class)
+	fun countDetail(masterId: Int): Int {
+		return datasource?.countDetail(masterId) ?: 0
 	}
 
 	fun getExcelDetailFile(masterId: Int): XSSFWorkbook {
-		val crudResponse = datasource?.getAllDetail(masterId, null, null)
+		val models = datasource?.getAllDetail(masterId, null, null)
 		val masterModel = datasource?.getById(masterId)
-		return if (crudResponse != null && crudResponse.status === ResponseStatusEnum.SUCCESS && masterModel != null)
-				this.detailTable!!.toExcelDetail(crudResponse.data!!, masterModel.data!!, this)
-			else XSSFWorkbook()
+
+		return detailTable!!.toExcelDetail(models!!, masterModel!!, this)
 	}
 
 }

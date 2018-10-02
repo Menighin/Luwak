@@ -9,6 +9,7 @@ import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.models.AbstractLuwakMasterDetailPage;
 import com.menighin.luwak.core.models.AbstractLuwakPage;
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto;
+import com.menighin.luwak.exceptions.CrudException;
 import kotlin.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -17,10 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -48,9 +46,13 @@ public class LuwakPageController {
 
 		try {
 			List<Pair<Integer, String>> options = page.getFilterValues(field, input);
-			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, options, null, null);
-		} catch (Exception e) {
-			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, null, e.getMessage());
+			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, options, null);
+		}
+		catch (CrudException ce) {
+			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, ce);
+		}
+		catch (Exception e) {
+			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, new CrudException(e.getMessage(), new HashMap()));
 		}
 	}
 
@@ -61,68 +63,91 @@ public class LuwakPageController {
 									   @RequestParam(value = "filter", required = false) String filterJson) {
 
 		AbstractLuwakPage luwakPage = luwakApplication.getPage(pageName);
+
 		try {
 			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) mapper.readValue(filterJson, luwakPage.getFilterClass());
-			return luwakPage.getAll(page == null ? 0 : page.intValue(), filter);
-		} catch (Exception e) {
-			e.printStackTrace();
+			return new CrudResponse<ArrayList<ILuwakDto>>(ResponseStatusEnum.SUCCESS, luwakPage.getAll(page == null ? 0 : page.intValue(), filter), null);
 		}
-
-		return null;
+		catch (CrudException ce) {
+			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, ce);
+		}
+		catch (Exception e) {
+			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, new CrudException(e.getMessage(), new HashMap()));
+		}
     }
 
 	@ResponseBody
 	@PostMapping(value = "/{page}/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<CrudResponse> create(@PathVariable("page") String pageName,
+	public CrudResponse create(@PathVariable("page") String pageName,
 											   @RequestBody Map<String, Object> model) {
 		AbstractLuwakPage page = luwakApplication.getPage(pageName);
-		CrudResponse crudResponse = page.create(model);
 
-		if (crudResponse.getStatus() == ResponseStatusEnum.SUCCESS)
-			return new ResponseEntity<>(crudResponse, HttpStatus.CREATED);
-		else
-			return new ResponseEntity<>(crudResponse, HttpStatus.BAD_REQUEST);
+		try {
+			Boolean result = page.create(model);
+			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, result, null);
+		}
+		catch (CrudException ce) {
+			return new CrudResponse<Boolean>(ResponseStatusEnum.ERROR, null, ce);
+		}
+		catch (Exception e) {
+			return new CrudResponse<Boolean>(ResponseStatusEnum.ERROR, null, new CrudException(e.getMessage(), new HashMap()));
+		}
+
 	}
 
 	@ResponseBody
 	@PutMapping(value = "/{page}/update/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<CrudResponse> edit(@PathVariable("page") String pageName,
+	public CrudResponse edit(@PathVariable("page") String pageName,
 							   @PathVariable("id") int id,
 							   @RequestBody  Map<String, Object> model) {
 		AbstractLuwakPage page = luwakApplication.getPage(pageName);
-		CrudResponse crudResponse = page.editModel(id, model);
 
-		if (crudResponse.getStatus() == ResponseStatusEnum.SUCCESS)
-			return new ResponseEntity<>(crudResponse, HttpStatus.OK);
-		else
-			return new ResponseEntity<>(crudResponse, HttpStatus.BAD_REQUEST);
+		try {
+			Boolean result = page.editModel(id, model);
+			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, result, null);
+		}
+		catch (CrudException ce) {
+			return new CrudResponse<Boolean>(ResponseStatusEnum.ERROR, null, ce);
+		}
+		catch (Exception e) {
+			return new CrudResponse<Boolean>(ResponseStatusEnum.ERROR, null, new CrudException(e.getMessage(), new HashMap()));
+		}
 	}
 
 	@ResponseBody
 	@DeleteMapping(value = "/{page}/delete/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<CrudResponse> delete(@PathVariable("page") String pageName,
+	public CrudResponse delete(@PathVariable("page") String pageName,
 								 @PathVariable("id") int id,
 								 @RequestBody Map<String, Object> model) {
     	AbstractLuwakPage page = luwakApplication.getPage(pageName);
-    	CrudResponse crudResponse = page.deleteModel(id, model);
 
-		if (crudResponse.getStatus() == ResponseStatusEnum.SUCCESS)
-    		return new ResponseEntity<>(crudResponse, HttpStatus.OK);
-    	else
-    		return new ResponseEntity<>(crudResponse, HttpStatus.BAD_REQUEST);
+		try {
+			Boolean result = page.deleteModel(id, model);
+			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, result, null);
+		}
+		catch (CrudException ce) {
+			return new CrudResponse<Boolean>(ResponseStatusEnum.ERROR, null, ce);
+		}
+		catch (Exception e) {
+			return new CrudResponse<Boolean>(ResponseStatusEnum.ERROR, null, new CrudException(e.getMessage(), new HashMap()));
+		}
 	}
 
 	@ResponseBody
 	@GetMapping(value = "/{page}/count")
-	public ResponseEntity<CrudResponse<Integer>> count(@PathVariable("page") String pageName) {
-		AbstractLuwakPage luwakPage = luwakApplication.getPage(pageName);
-		try {
-			return new ResponseEntity<CrudResponse<Integer>>(luwakPage.count(), HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public CrudResponse<Integer> count(@PathVariable("page") String pageName) {
+		AbstractLuwakPage page = luwakApplication.getPage(pageName);
 
-		return null;
+		try {
+			Integer result = page.count();
+			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, result, null);
+		}
+		catch (CrudException ce) {
+			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, ce);
+		}
+		catch (Exception e) {
+			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, new CrudException(e.getMessage(), new HashMap()));
+		}
 	}
 
 	@ResponseBody
@@ -133,27 +158,35 @@ public class LuwakPageController {
 											 @RequestParam(value = "filter", required = false) String filterJson) {
 
 		AbstractLuwakMasterDetailPage luwakPage = (AbstractLuwakMasterDetailPage) luwakApplication.getPage(pageName);
+
 		try {
 			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) mapper.readValue(filterJson, luwakPage.getFilterClass());
-			return luwakPage.getDetailAll(masterId, page == null ? 0 : page.intValue(), filter);
-		} catch (Exception e) {
-			e.printStackTrace();
+			return new CrudResponse<ArrayList<ILuwakDto>>(ResponseStatusEnum.SUCCESS,
+					luwakPage.getDetailAll(masterId, page == null ? 0 : page.intValue(), filter), null);
+		}
+		catch (CrudException ce) {
+			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, ce);
+		}
+		catch (Exception e) {
+			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, new CrudException(e.getMessage(), new HashMap()));
 		}
 
-		return null;
 	}
 
 	@ResponseBody
 	@GetMapping(value = "/{page}/detail/count")
-	public ResponseEntity<CrudResponse<Integer>> countDetail(@PathVariable("page") String pageName, @RequestParam(value = "masterId") Integer masterId) {
-		AbstractLuwakMasterDetailPage luwakPage = (AbstractLuwakMasterDetailPage) luwakApplication.getPage(pageName);
-		try {
-			return new ResponseEntity<CrudResponse<Integer>>(luwakPage.countDetail(masterId), HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public CrudResponse<Integer> countDetail(@PathVariable("page") String pageName, @RequestParam(value = "masterId") Integer masterId) {
+		AbstractLuwakMasterDetailPage page = (AbstractLuwakMasterDetailPage) luwakApplication.getPage(pageName);
 
-		return null;
+		try {
+			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, page.countDetail(masterId), null);
+		}
+		catch (CrudException ce) {
+			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, ce);
+		}
+		catch (Exception e) {
+			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, new CrudException(e.getMessage(), new HashMap()));
+		}
 	}
 
 	@Autowired

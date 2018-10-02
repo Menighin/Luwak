@@ -8,6 +8,7 @@ import com.menighin.luwak.core.interfaces.ILuwakDatasource;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.interfaces.ILuwakFilter;
 import com.menighin.luwak.core.interfaces.ILuwakModel;
+import com.menighin.luwak.exceptions.CrudException;
 import kotlin.Pair;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,52 +94,32 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 	 * @param input The value the user has input in order to filter the options
 	 * @return the list of options for a given field
 	 */
-	public List<Pair<Integer, String>> getFilterValues(String field, String input) {
+	public List<Pair<Integer, String>> getFilterValues(String field, String input) throws CrudException {
 		return new ArrayList<>();
 	}
 
-	public CrudResponse<ArrayList<? extends ILuwakDto>> getAll(int page, F filter) {
-		CrudResponse<ArrayList<M>> crudResponse = datasource.getAll(page, filter);
-		if (crudResponse != null && crudResponse.getStatus() == ResponseStatusEnum.SUCCESS)
-			return new CrudResponse<ArrayList<? extends ILuwakDto>>(ResponseStatusEnum.SUCCESS,
-					table.getTableData(crudResponse.getData()),
-					crudResponse.getValidations(),
-					crudResponse.getMsg());
-		return new CrudResponse<>(ResponseStatusEnum.ERROR, null, crudResponse.getValidations(), crudResponse.getMsg());
+	public ArrayList<? extends ILuwakDto> getAll(int page, F filter) throws CrudException{
+		ArrayList<M> models = datasource.getAll(page, filter);
+		return table.getTableData(models);
 	}
 
-	public CrudResponse<Integer> count() {
+	public Integer count() throws CrudException {
 		return datasource.count();
 	}
 
-	public CrudResponse create(Map<String, Object> dtoMap) {
-		try {
-			ILuwakDto dto = convertMapToDto(dtoMap);
-			return datasource.create(dto);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new CrudResponse(ResponseStatusEnum.ERROR, null, null, e.getMessage());
-		}
+	public boolean create(Map<String, Object> dtoMap) throws CrudException, Exception {
+		ILuwakDto dto = convertMapToDto(dtoMap);
+		return datasource.create(dto);
 	}
 
-	public CrudResponse editModel(int id, Map<String, Object> dtoMap) {
-		try {
-			ILuwakDto dto = convertMapToDto(dtoMap);
-			return datasource.update(id, dto);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new CrudResponse(ResponseStatusEnum.ERROR, null, null, e.getMessage());
-		}
+	public boolean editModel(int id, Map<String, Object> dtoMap) throws CrudException, Exception {
+		ILuwakDto dto = convertMapToDto(dtoMap);
+		return datasource.update(id, dto);
 	}
 
-	public CrudResponse deleteModel(int id, Map<String, Object> dtoMap) {
-		try {
-			ILuwakDto dto = convertMapToDto(dtoMap);
-			return datasource.delete(id, dto);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new CrudResponse(ResponseStatusEnum.ERROR, null, null, e.getMessage());
-		}
+	public boolean deleteModel(int id, Map<String, Object> dtoMap) throws CrudException, Exception {
+		ILuwakDto dto = convertMapToDto(dtoMap);
+		return datasource.delete(id, dto);
 	}
 
 	private ILuwakDto convertMapToDto(Map<String, Object> model) throws IllegalAccessException, InstantiationException {
@@ -160,12 +141,8 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 	}
 
 	public XSSFWorkbook getExcelFile() {
-		CrudResponse<ArrayList<M>> crudResponse = datasource.getAll(null, null);
-		if (crudResponse != null && crudResponse.getStatus() == ResponseStatusEnum.SUCCESS)
-			return this.table.toExcel(crudResponse.getData());
-		return null;
+		ArrayList<M> models = datasource.getAll(null, null);
+		return this.table.toExcel(models);
 	}
-
-
 
 }

@@ -4,6 +4,7 @@ import com.menighin.luwak.core.dtos.CrudResponse
 import com.menighin.luwak.core.enums.ResponseStatusEnum
 import com.menighin.luwak.core.interfaces.ILuwakDatasource
 import com.menighin.luwak.core.interfaces.ILuwakDto
+import com.sun.org.apache.xpath.internal.operations.Bool
 import org.springframework.stereotype.Repository
 import testapp.filters.CityPageFilter
 import testapp.models.City
@@ -29,11 +30,11 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 		)
 	}
 
-	override fun getById(id: Int): CrudResponse<City> {
-		return CrudResponse(ResponseStatusEnum.SUCCESS, cities.find { it.id == id })
+	override fun getById(id: Int): City? {
+		return cities.find { it.id == id }
 	}
 
-	override fun getAll(page: Int?, filter: CityPageFilter?): CrudResponse<ArrayList<City>> {
+	override fun getAll(page: Int?, filter: CityPageFilter?): ArrayList<City> {
 		val filteredCities =
 			cities.filter {
 				city ->
@@ -41,10 +42,10 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 					(filter?.name == null  || filter.name == city.name)
 			}
 
-		return CrudResponse(ResponseStatusEnum.SUCCESS, filteredCities as ArrayList<City>, null, null)
+		return filteredCities as ArrayList<City>
 	}
 
-	override fun create(luwakDto: ILuwakDto<City>): CrudResponse<Void> {
+	override fun create(luwakDto: ILuwakDto<City>): Boolean {
 		val dto = luwakDto as CityViewModel
 		val countryId = dto.countryName.toInt()
 		val country = countries.find { it.id == countryId }
@@ -53,25 +54,25 @@ open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
 
 		cities.add(newCity)
 
-		return CrudResponse(ResponseStatusEnum.SUCCESS)
+		return true
 	}
 
-	override fun update(id: Int, luwakDto: ILuwakDto<City>?): CrudResponse<Void> {
+	override fun update(id: Int, luwakDto: ILuwakDto<City>?): Boolean {
 		val dto = luwakDto as CityViewModel
 
-		val model = cities.find { it.id == id } ?: return CrudResponse(ResponseStatusEnum.ERROR)
+		val model = cities.find { it.id == id } ?: return false
 		model.name = dto.cityName
 
-		return CrudResponse(ResponseStatusEnum.SUCCESS)
+		return true
 	}
 
-	override fun delete(id: Int, luwakDto: ILuwakDto<City>?): CrudResponse<Void> {
+	override fun delete(id: Int, luwakDto: ILuwakDto<City>?): Boolean {
 		cities = cities.filter {it.id != id}.toMutableList()
 
-		return CrudResponse(ResponseStatusEnum.SUCCESS)
+		return true
 	}
 
-	override fun count(): CrudResponse<Int> {
-		return CrudResponse(ResponseStatusEnum.SUCCESS, cities.count())
+	override fun count(): Int {
+		return cities.count()
 	}
 }

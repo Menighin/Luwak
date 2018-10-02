@@ -18,7 +18,6 @@ import org.springframework.context.MessageSource
 import java.lang.reflect.Field
 
 import java.lang.reflect.ParameterizedType
-import java.util.ArrayList
 
 abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto<M>> {
 

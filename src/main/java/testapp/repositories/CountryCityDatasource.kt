@@ -30,11 +30,11 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 		)
 	}
 
-	override fun getById(id: Int): CrudResponse<Country> {
-		return CrudResponse(ResponseStatusEnum.SUCCESS, countries.find { it.id == id })
+	override fun getById(id: Int): Country? {
+		return countries.find { it.id == id }
 	}
 
-	override fun getAll(page: Int?, filter: CountryCityPageFilter?): CrudResponse<ArrayList<Country>> {
+	override fun getAll(page: Int?, filter: CountryCityPageFilter?): ArrayList<Country> {
 		val filteredCountries =
 				countries.filter {
 					country ->
@@ -42,10 +42,10 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 							(filter?.city == null  || filter.city == country.code)
 				}
 
-		return CrudResponse(ResponseStatusEnum.SUCCESS, filteredCountries as ArrayList<Country>, null, null)
+		return filteredCountries as ArrayList<Country>
 	}
 
-	override fun getAllDetail(masterId: Int, page: Int?, filter: CountryCityPageFilter?): CrudResponse<ArrayList<City>> {
+	override fun getAllDetail(masterId: Int, page: Int?, filter: CountryCityPageFilter?): ArrayList<City> {
 		val filteredCities =
 				cities.filter {
 					city ->
@@ -54,48 +54,48 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 					(filter?.country == null  || filter.country == city.name)
 				}
 
-		return CrudResponse<ArrayList<City>>(ResponseStatusEnum.SUCCESS, filteredCities as java.util.ArrayList<City>)
+		return filteredCities as ArrayList<City>
 	}
 
-	override fun count(): CrudResponse<Int> {
-		return CrudResponse(ResponseStatusEnum.SUCCESS, countries.count())
+	override fun count(): Int {
+		return countries.count()
 	}
 
-	override fun create(luwakDto: ILuwakDto<Country>?): CrudResponse<Void> {
+	override fun create(luwakDto: ILuwakDto<Country>?): Boolean {
 		val dto = luwakDto as CountryViewModel
 		var lastId = countries.sortedBy { it.id }.last().id
 		val newCountry = Country(++lastId, dto.name)
 
 		countries.add(newCountry)
 
-		return CrudResponse(ResponseStatusEnum.SUCCESS)
+		return true
 	}
 
-	override fun update(id: Int, luwakDto: ILuwakDto<Country>?): CrudResponse<Void> {
+	override fun update(id: Int, luwakDto: ILuwakDto<Country>?): Boolean {
 		val dto = luwakDto as CountryViewModel
 
-		val model = countries.find { it.id == id } ?: return CrudResponse(ResponseStatusEnum.ERROR)
+		val model = countries.find { it.id == id } ?: return false
 		model.code = dto.name
 
-		return CrudResponse(ResponseStatusEnum.SUCCESS)
+		return true
 	}
 
 
-	override fun delete(id: Int, luwakDto: ILuwakDto<Country>?): CrudResponse<Void> {
+	override fun delete(id: Int, luwakDto: ILuwakDto<Country>?): Boolean {
 		countries = countries.filter {it.id != id}.toMutableList()
-		return CrudResponse(ResponseStatusEnum.SUCCESS)
+		return true
 	}
 
-	override fun updateDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
+	override fun updateDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): Boolean {
 		val dto = luwakDto as CityViewModel
 
-		val model = cities.find { it.id == id && it.country.id == masterId } ?: return CrudResponse(ResponseStatusEnum.ERROR)
+		val model = cities.find { it.id == id && it.country.id == masterId } ?: return false
 		model.name = dto.cityName
 
-		return CrudResponse(ResponseStatusEnum.SUCCESS)
+		return true
 	}
 
-	override fun createDetail(masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
+	override fun createDetail(masterId: Int, luwakDto: ILuwakDto<Country>): Boolean {
 		val dto = luwakDto as CityViewModel
 		var lastId = countries.sortedBy { it.id }.last().id
 		val country = countries.find { it.id == masterId }
@@ -103,16 +103,16 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 
 		cities.add(newCity)
 
-		return CrudResponse(ResponseStatusEnum.SUCCESS)
+		return true
 	}
 
-	override fun deleteDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): CrudResponse<Void> {
+	override fun deleteDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): Boolean {
 		cities = cities.filter {it.id != id}.toMutableList()
-		return CrudResponse(ResponseStatusEnum.SUCCESS)
+		return true
 	}
 
-	override fun countDetail(masterId: Int): CrudResponse<Int> {
-		return CrudResponse(ResponseStatusEnum.SUCCESS, cities.asSequence().filter{it.country.id == masterId}.count())
+	override fun countDetail(masterId: Int): Int {
+		return cities.asSequence().filter{it.country.id == masterId}.count()
 	}
 
 }

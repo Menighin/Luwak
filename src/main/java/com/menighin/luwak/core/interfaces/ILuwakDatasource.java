@@ -6,15 +6,15 @@ import java.util.ArrayList;
 
 public interface ILuwakDatasource<M extends ILuwakModel, F extends ILuwakFilter> {
 
-	CrudResponse<M> getById(int id);
+	M getById(int id);
 
-	CrudResponse<ArrayList<M>> getAll(Integer page, F filter);
+	ArrayList<M> getAll(Integer page, F filter);
 
-	CrudResponse create(ILuwakDto<M> luwakDto);
+	boolean create(ILuwakDto<M> luwakDto);
 
-	CrudResponse update(int id, ILuwakDto<M> luwakDto);
+	boolean update(int id, ILuwakDto<M> luwakDto);
 
-	CrudResponse delete(int id, ILuwakDto<M> luwakDto);
+	boolean delete(int id, ILuwakDto<M> luwakDto);
 
-	CrudResponse<Integer> count();
+	Integer count();
 }
