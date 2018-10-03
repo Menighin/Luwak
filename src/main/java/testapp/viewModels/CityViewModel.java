@@ -8,7 +8,7 @@ import com.menighin.luwak.core.interfaces.ILuwakDto;
 import testapp.models.City;
 import testapp.models.Country;
 
-public class CityViewModel implements ILuwakDto<City> {
+public class CityViewModel implements ILuwakDto {
 
     @Label("luwak.city.name")
     @MapModel(City.NAME)

@@ -6,11 +6,11 @@ interface ILuwakMasterDetailDatasource<M : ILuwakModel, D : ILuwakModel, F : ILu
 
 	fun getAllDetail(masterId: Int, page: Int?, filter: F?) : ArrayList<D>
 
-	fun createDetail(masterId: Int, luwakDto: ILuwakDto<M>): Boolean
+	fun createDetail(masterId: Int, luwakDto: ILuwakDto): Boolean
 
-	fun updateDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<M>): Boolean
+	fun updateDetail(id: Int, masterId: Int, luwakDto: ILuwakDto): Boolean
 
-	fun deleteDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<M>): Boolean
+	fun deleteDetail(id: Int, masterId: Int, luwakDto: ILuwakDto): Boolean
 
 	fun countDetail(masterId: Int): Int
 

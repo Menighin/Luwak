@@ -61,7 +61,7 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 		return countries.count()
 	}
 
-	override fun create(luwakDto: ILuwakDto<Country>?): Boolean {
+	override fun create(luwakDto: ILuwakDto?): Boolean {
 		val dto = luwakDto as CountryViewModel
 		var lastId = countries.sortedBy { it.id }.last().id
 		val newCountry = Country(++lastId, dto.name)
@@ -71,7 +71,7 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 		return true
 	}
 
-	override fun update(id: Int, luwakDto: ILuwakDto<Country>?): Boolean {
+	override fun update(id: Int, luwakDto: ILuwakDto?): Boolean {
 		val dto = luwakDto as CountryViewModel
 
 		val model = countries.find { it.id == id } ?: return false
@@ -81,12 +81,12 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 	}
 
 
-	override fun delete(id: Int, luwakDto: ILuwakDto<Country>?): Boolean {
+	override fun delete(id: Int, luwakDto: ILuwakDto?): Boolean {
 		countries = countries.filter {it.id != id}.toMutableList()
 		return true
 	}
 
-	override fun updateDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): Boolean {
+	override fun updateDetail(id: Int, masterId: Int, luwakDto: ILuwakDto): Boolean {
 		val dto = luwakDto as CityViewModel
 
 		val model = cities.find { it.id == id && it.country.id == masterId } ?: return false
@@ -95,7 +95,7 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 		return true
 	}
 
-	override fun createDetail(masterId: Int, luwakDto: ILuwakDto<Country>): Boolean {
+	override fun createDetail(masterId: Int, luwakDto: ILuwakDto): Boolean {
 		val dto = luwakDto as CityViewModel
 		var lastId = countries.sortedBy { it.id }.last().id
 		val country = countries.find { it.id == masterId }
@@ -106,7 +106,7 @@ open class CountryCityDatasource : ILuwakMasterDetailDatasource<Country, City, C
 		return true
 	}
 
-	override fun deleteDetail(id: Int, masterId: Int, luwakDto: ILuwakDto<Country>): Boolean {
+	override fun deleteDetail(id: Int, masterId: Int, luwakDto: ILuwakDto): Boolean {
 		cities = cities.filter {it.id != id}.toMutableList()
 		return true
 	}

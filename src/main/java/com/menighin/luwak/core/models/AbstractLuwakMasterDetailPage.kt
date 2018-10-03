@@ -44,10 +44,10 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 	}
 
 	@Throws(CrudException::class)
-	fun getDetailAll(masterId: Int, page: Int, filter: F?): ArrayList<out ILuwakDto<D>> {
+	fun getDetailAll(masterId: Int, page: Int, filter: F?): ArrayList<out ILuwakDto> {
 		val models = datasource?.getAllDetail(masterId, page, filter)
 
-		return detailTable?.getTableData(models!!) as ArrayList<out ILuwakDto<D>>
+		return detailTable?.getTableData(models!!) as ArrayList<out ILuwakDto>
 	}
 
 	@Throws(CrudException::class)

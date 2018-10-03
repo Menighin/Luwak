@@ -10,11 +10,11 @@ public interface ILuwakDatasource<M extends ILuwakModel, F extends ILuwakFilter>
 
 	ArrayList<M> getAll(Integer page, F filter);
 
-	boolean create(ILuwakDto<M> luwakDto);
+	boolean create(ILuwakDto luwakDto);
 
-	boolean update(int id, ILuwakDto<M> luwakDto);
+	boolean update(int id, ILuwakDto luwakDto);
 
-	boolean delete(int id, ILuwakDto<M> luwakDto);
+	boolean delete(int id, ILuwakDto luwakDto);
 
 	Integer count();
 }

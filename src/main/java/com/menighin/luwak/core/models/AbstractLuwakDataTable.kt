@@ -19,7 +19,7 @@ import java.lang.reflect.Field
 
 import java.lang.reflect.ParameterizedType
 
-abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto<M>> {
+abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto> {
 
 	var classModel: Class<M>? = null
 		private set
@@ -102,7 +102,7 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto<M>> {
 		val tableTitle = this::class.java.getAnnotation(LuwakTable::class.java).title
 
 		val dtos = this.getTableData(models)
-		val masterDto = page.table.getTableData(arrayListOf(masterModel)).first() as ILuwakDto<*>
+		val masterDto = page.table.getTableData(arrayListOf(masterModel)).first() as ILuwakDto
 
 		val masterDtoClass = page.table.classDto!!
 
@@ -117,7 +117,7 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto<M>> {
 
 	}
 
-	private fun createWorkbook(tableTitle: String, headerLabels: List<String>, excelFields: List<Field>, dtos: List<ILuwakDto<M>>, masterDtoClass : Class<*>?, masterDto: ILuwakDto<*>?) : XSSFWorkbook {
+	private fun createWorkbook(tableTitle: String, headerLabels: List<String>, excelFields: List<Field>, dtos: List<ILuwakDto>, masterDtoClass : Class<*>?, masterDto: ILuwakDto?) : XSSFWorkbook {
 
 		// Setting up workbook
 		val workbook = XSSFWorkbook()

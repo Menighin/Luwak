@@ -7,7 +7,7 @@ import com.menighin.luwak.core.enums.ColumnTypeEnum
 import com.menighin.luwak.core.interfaces.ILuwakDto
 import testapp.models.Country
 
-class CountryViewModel : ILuwakDto<Country> {
+class CountryViewModel : ILuwakDto {
 
 	@Label("luwak.country.name")
 	@MapModel(Country.CODE)
