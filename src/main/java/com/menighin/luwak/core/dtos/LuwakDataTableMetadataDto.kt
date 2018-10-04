@@ -5,7 +5,6 @@ import com.menighin.luwak.core.annotations.Label
 import com.menighin.luwak.core.annotations.LuwakTable
 import com.menighin.luwak.core.enums.ColumnTypeEnum
 import com.menighin.luwak.core.models.AbstractLuwakDataTable
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import java.util.*
 
@@ -16,7 +15,8 @@ class LuwakDataTableMetadataDto {
 	var canCreate: Boolean = true
 	var canEdit: Boolean = true
 	var canDelete: Boolean = true
-	var columns: ArrayList<ColumnMetadataDto> = ArrayList()
+	var columns: ArrayList<FieldMetadataDto> = ArrayList()
+	var modalFields: ArrayList<FieldMetadataDto> = ArrayList()
 
 	constructor(table: AbstractLuwakDataTable<*, *>, messageSource: MessageSource) {
 
@@ -34,17 +34,28 @@ class LuwakDataTableMetadataDto {
 		canDelete = luwakTableAnnotation.canDelete
 		canEdit = luwakTableAnnotation.canEdit
 
-		val fields = dtoClass!!.declaredFields
+		val columnFields = dtoClass!!.declaredFields
 
 		// Iterate through fields generating the metadata
-		for (f in fields) {
+		for (f in columnFields) {
 			if (!f.isAnnotationPresent(Label::class.java)) continue
 
 			val label = messageSource.getMessage(f.getAnnotation(Label::class.java).value, null, Locale("pt"))
 			val columnType = f.getAnnotation(ColumnType::class.java)
 			val columnTypeEnum = columnType?.value ?: ColumnTypeEnum.TEXT
 
-			columns.add(ColumnMetadataDto(f.name, label, columnTypeEnum))
+			this.columns.add(FieldMetadataDto(f.name, label, columnTypeEnum))
+		}
+
+		val modalFields = table.getModalClass()!!.declaredFields
+		for (f in modalFields) {
+			if (!f.isAnnotationPresent(Label::class.java)) continue
+
+			val label = messageSource.getMessage(f.getAnnotation(Label::class.java).value, null, Locale("pt"))
+			val columnType = f.getAnnotation(ColumnType::class.java)
+			val columnTypeEnum = columnType?.value ?: ColumnTypeEnum.TEXT
+
+			this.modalFields.add(FieldMetadataDto(f.name, label, columnTypeEnum))
 		}
 	}
 

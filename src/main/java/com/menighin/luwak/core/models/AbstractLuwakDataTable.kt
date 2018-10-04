@@ -74,6 +74,10 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto> {
 		return dtos
 	}
 
+	open fun getModalClass() : Class<*>? {
+		return classDto
+	}
+
 	/**
 	 * Converts this Luwak table to an excel file respecting the DTO model
 	 */
@@ -157,7 +161,7 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto> {
 		for (dto in dtos) {
 			val row = sheet.createRow(rowNum++)
 
-			// Filling columns
+			// Filling fields
 			for ((i, field) in excelFields.withIndex()) {
 				var columnType = ColumnTypeEnum.TEXT
 				if (field.isAnnotationPresent(ColumnType::class.java))
@@ -177,7 +181,7 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto> {
 			}
 		}
 
-		// Resize columns to fit values
+		// Resize fields to fit values
 		for (i in 0 until headerLabels.size)
 			sheet.autoSizeColumn(i)
 
