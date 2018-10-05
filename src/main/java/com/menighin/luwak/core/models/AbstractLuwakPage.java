@@ -31,29 +31,13 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 	private Class<? extends ILuwakModel> masterClass;
 	private Class<? extends ILuwakFilter> filterClass;
 
-	private AbstractLuwakDataTable<M, ?> table;
-
-	private ILuwakDatasource<M, F> datasource;
-
-	public AbstractLuwakDataTable getTable() {
-		return table;
-	}
+	public abstract AbstractLuwakDataTable<M, ? extends ILuwakDto>  getTable();
 
 	public void setFilterClass(Class<? extends ILuwakFilter> filterClass) {
 		this.filterClass = filterClass;
 	}
 
-	public void setTable(AbstractLuwakDataTable table) {
-		this.table = table;
-	}
-
-	public ILuwakDatasource<M, F> getDatasource() {
-		return datasource;
-	}
-
-	public void setDatasource(ILuwakDatasource<M, F> datasource) {
-		this.datasource = datasource;
-	}
+	public abstract ILuwakDatasource<M, F> getDatasource();
 
 	public Class<? extends ILuwakModel> getModelClass() {
 		return masterClass;
@@ -79,8 +63,8 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 	public LuwakPageMetadataDto getPageMetadata() {
 		LuwakPageMetadataDto pageMetadata = new LuwakPageMetadataDto();
 
-		if (table != null)
-			pageMetadata.setMasterTable(table.getMetadata(messageSource));
+		if (getTable() != null)
+			pageMetadata.setMasterTable(getTable().getMetadata(messageSource));
 
 		pageMetadata.setFilters(LuwakFilterMetadataDto.Companion.getFiltersFrom(filterClass));
 
@@ -99,32 +83,32 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 	}
 
 	public ArrayList<? extends ILuwakDto> getAll(int page, F filter) throws CrudException{
-		ArrayList<M> models = datasource.getAll(page, filter);
-		return table.getTableData(models);
+		ArrayList<M> models = getDatasource().getAll(page, filter);
+		return getTable().getTableData(models);
 	}
 
 	public Integer count() throws CrudException {
-		return datasource.count();
+		return getDatasource().count();
 	}
 
 	public boolean create(Map<String, Object> dtoMap) throws CrudException, Exception {
 		ILuwakDto dto = convertMapToDto(dtoMap);
-		return datasource.create(dto);
+		return getDatasource().create(dto);
 	}
 
 	public boolean editModel(int id, Map<String, Object> dtoMap) throws CrudException, Exception {
 		ILuwakDto dto = convertMapToDto(dtoMap);
-		return datasource.update(id, dto);
+		return getDatasource().update(id, dto);
 	}
 
 	public boolean deleteModel(int id, Map<String, Object> dtoMap) throws CrudException, Exception {
 		ILuwakDto dto = convertMapToDto(dtoMap);
-		return datasource.delete(id, dto);
+		return getDatasource().delete(id, dto);
 	}
 
 	private ILuwakDto convertMapToDto(Map<String, Object> model) throws IllegalAccessException, InstantiationException {
 		// Generating DTO model
-		Class classDto = table.getClassDto();
+		Class classDto = getTable().getClassDto();
 		ILuwakDto dto = (ILuwakDto) classDto.newInstance();
 		Field[] fields = classDto.getDeclaredFields();
 
@@ -141,8 +125,8 @@ public abstract class AbstractLuwakPage<M extends ILuwakModel, F extends ILuwakF
 	}
 
 	public XSSFWorkbook getExcelFile() {
-		ArrayList<M> models = datasource.getAll(null, null);
-		return this.table.toExcel(models);
+		ArrayList<M> models = getDatasource().getAll(null, null);
+		return this.getTable().toExcel(models);
 	}
 
 }

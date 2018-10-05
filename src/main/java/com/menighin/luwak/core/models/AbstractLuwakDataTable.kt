@@ -99,25 +99,26 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto> {
 	}
 
 	fun toExcelDetail(models: ArrayList<M>, masterModel: ILuwakModel, page: AbstractLuwakMasterDetailPage<*, *, *>) : XSSFWorkbook {
-		// Check if annotation is correct
-		if (!this::class.java.isAnnotationPresent(LuwakTable::class.java))
-			throw Exception("Table not annotated with @LuwakTable")
-
-		val tableTitle = this::class.java.getAnnotation(LuwakTable::class.java).title
-
-		val dtos = this.getTableData(models)
-		val masterDto = page.table.getTableData(arrayListOf(masterModel)).first() as ILuwakDto
-
-		val masterDtoClass = page.table.classDto!!
-
-		// Get the fields from both master and detail table
-		val excelFields = masterDtoClass.declaredFields
-				.filter { it.isAnnotationPresent(Label::class.java) && page.getMasterFields().contains(it.name) } as ArrayList
-
-		excelFields.addAll(this.classDto!!.declaredFields.filter { it.isAnnotationPresent(Label::class.java)})
-		val headerLabels = excelFields.map { f -> f.getAnnotation(Label::class.java).value }
-
-		return createWorkbook(tableTitle, headerLabels, excelFields, dtos, masterDtoClass, masterDto)
+//		// Check if annotation is correct
+//		if (!this::class.java.isAnnotationPresent(LuwakTable::class.java))
+//			throw Exception("Table not annotated with @LuwakTable")
+//
+//		val tableTitle = this::class.java.getAnnotation(LuwakTable::class.java).title
+//
+//		val dtos = this.getTableData(models)
+//		val masterDto = page.table.getTableData(arrayListOf(masterModel)).first() as ILuwakDto
+//
+//		val masterDtoClass = page.table.classDto!!
+//
+//		// Get the fields from both master and detail table
+//		val excelFields = masterDtoClass.declaredFields
+//				.filter { it.isAnnotationPresent(Label::class.java) && page.getMasterFields().contains(it.name) } as ArrayList
+//
+//		excelFields.addAll(this.classDto!!.declaredFields.filter { it.isAnnotationPresent(Label::class.java)})
+//		val headerLabels = excelFields.map { f -> f.getAnnotation(Label::class.java).value }
+//
+//		return createWorkbook(tableTitle, headerLabels, excelFields, dtos, masterDtoClass, masterDto)
+		return XSSFWorkbook()
 
 	}
 

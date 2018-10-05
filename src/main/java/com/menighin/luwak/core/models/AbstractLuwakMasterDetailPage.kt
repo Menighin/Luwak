@@ -15,16 +15,9 @@ import java.util.ArrayList
 abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F : ILuwakFilter> : AbstractLuwakPage<M, F>() {
 
 	var detailClass: Class<out ILuwakModel>? = null
-	var detailTable: AbstractLuwakDataTable<D,*>? = null
-	var datasource: ILuwakMasterDetailDatasource<M, D, F>?
-		set(value) {
-			super.setDatasource(value)
-		}
-		get() {
-			return super.getDatasource() as ILuwakMasterDetailDatasource<M, D, F>?
-		}
 
-//	var masterFields: List<String> = ArrayList()
+	abstract override fun getDatasource() : ILuwakMasterDetailDatasource<M, D, F>
+	abstract fun getDetailTable() : AbstractLuwakDataTable<D, *>
 
 	init {
 		val superclass = javaClass.genericSuperclass
@@ -38,28 +31,28 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 	override fun getPageMetadata(): LuwakPageMetadataDto {
 		val metadataDto = super.getPageMetadata()
 
-		metadataDto.slaveTable = detailTable?.getMetadata(messageSource)
+		metadataDto.slaveTable = getDetailTable().getMetadata(messageSource)
 
 		return metadataDto
 	}
 
 	@Throws(CrudException::class)
 	fun getDetailAll(masterId: Int, page: Int, filter: F?): ArrayList<out ILuwakDto> {
-		val models = datasource?.getAllDetail(masterId, page, filter)
+		val models = datasource.getAllDetail(masterId, page, filter)
 
-		return detailTable?.getTableData(models!!) as ArrayList<out ILuwakDto>
+		return getDetailTable().getTableData(models)
 	}
 
 	@Throws(CrudException::class)
 	fun countDetail(masterId: Int): Int {
-		return datasource?.countDetail(masterId) ?: 0
+		return datasource.countDetail(masterId)
 	}
 
 	fun getExcelDetailFile(masterId: Int): XSSFWorkbook {
-		val models = datasource?.getAllDetail(masterId, null, null)
-		val masterModel = datasource?.getById(masterId)
+		val models = datasource.getAllDetail(masterId, null, null)
+		val masterModel = datasource.getById(masterId)
 
-		return detailTable!!.toExcelDetail(models!!, masterModel!!, this)
+		return getDetailTable().toExcelDetail(models, masterModel!!, this)
 	}
 
 }

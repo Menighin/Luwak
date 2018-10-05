@@ -8,15 +8,13 @@ import com.menighin.luwak.core.enums.ColumnTypeEnum;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.models.AbstractLuwakDataTable;
 import org.jetbrains.annotations.Nullable;
-import testapp.filters.CityPageFilter;
+import org.springframework.stereotype.Component;
 import testapp.models.City;
 import testapp.viewModels.CityViewModel;
 
+@Component
 @LuwakTable(title = "City", canCreate = true, canDelete = true, canEdit = true)
 public class CityDataTable extends AbstractLuwakDataTable<City, CityViewModel> {
-	public CityDataTable() {
-		super();
-	}
 
 	@Nullable
 	@Override
