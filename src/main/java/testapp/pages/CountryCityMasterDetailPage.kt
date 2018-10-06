@@ -1,5 +1,6 @@
 package testapp.pages
 
+import com.menighin.luwak.core.interfaces.ILuwakDto
 import com.menighin.luwak.core.interfaces.ILuwakMasterDetailDatasource
 import com.menighin.luwak.core.models.AbstractLuwakDataTable
 import com.menighin.luwak.core.models.AbstractLuwakMasterDetailPage
@@ -27,20 +28,17 @@ class CountryCityMasterDetailPage : AbstractLuwakMasterDetailPage<Country, City,
 	@Autowired
 	var countryDatatable: CountryDatatable? = null
 
-	override fun getDatasource(): ILuwakMasterDetailDatasource<Country, City, CountryCityPageFilter> {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-	}
-
-	override fun getDetailTable(): AbstractLuwakDataTable<City, *> {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-	}
-
-	override fun getTable(): AbstractLuwakDataTable<Country, *> {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-	}
-
 	override fun getMasterFields(): ArrayList<String> {
 		return arrayListOf(CountryViewModel::name.name)
 	}
+
+	override val detailTable: AbstractLuwakDataTable<City, *>
+		get() = cityDataTable!!
+
+	override val datasource: ILuwakMasterDetailDatasource<Country, City, CountryCityPageFilter>
+		get() = countryCityDatasource!!
+
+	override val table: AbstractLuwakDataTable<Country, out ILuwakDto>?
+		get() = countryDatatable!!
 
 }

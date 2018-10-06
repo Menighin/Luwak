@@ -99,14 +99,14 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto> {
 	}
 
 	fun toExcelDetail(models: ArrayList<M>, masterModel: ILuwakModel, page: AbstractLuwakMasterDetailPage<*, *, *>) : XSSFWorkbook {
-//		// Check if annotation is correct
+		// Check if annotation is correct
 //		if (!this::class.java.isAnnotationPresent(LuwakTable::class.java))
 //			throw Exception("Table not annotated with @LuwakTable")
 //
 //		val tableTitle = this::class.java.getAnnotation(LuwakTable::class.java).title
 //
 //		val dtos = this.getTableData(models)
-//		val masterDto = page.table.getTableData(arrayListOf(masterModel)).first() as ILuwakDto
+//		val masterDto = page.table.getTableData(listOf(masterModel)).first()
 //
 //		val masterDtoClass = page.table.classDto!!
 //

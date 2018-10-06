@@ -1,12 +1,7 @@
 package com.menighin.luwak.core.models
 
-import com.menighin.luwak.core.dtos.CrudResponse
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto
-import com.menighin.luwak.core.enums.ResponseStatusEnum
-import com.menighin.luwak.core.interfaces.ILuwakDto
-import com.menighin.luwak.core.interfaces.ILuwakFilter
-import com.menighin.luwak.core.interfaces.ILuwakMasterDetailDatasource
-import com.menighin.luwak.core.interfaces.ILuwakModel
+import com.menighin.luwak.core.interfaces.*
 import com.menighin.luwak.exceptions.CrudException
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.lang.reflect.ParameterizedType
@@ -16,8 +11,9 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 
 	var detailClass: Class<out ILuwakModel>? = null
 
-	abstract override fun getDatasource() : ILuwakMasterDetailDatasource<M, D, F>
-	abstract fun getDetailTable() : AbstractLuwakDataTable<D, *>
+	abstract override val datasource: ILuwakMasterDetailDatasource<M, D, F>
+
+	abstract val detailTable: AbstractLuwakDataTable<D, *>
 
 	init {
 		val superclass = javaClass.genericSuperclass
@@ -28,19 +24,20 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 
 	abstract fun getMasterFields() : ArrayList<String>
 
-	override fun getPageMetadata(): LuwakPageMetadataDto {
-		val metadataDto = super.getPageMetadata()
+	override val pageMetadata: LuwakPageMetadataDto
+		get() {
+			val metadataDto = super.pageMetadata
 
-		metadataDto.slaveTable = getDetailTable().getMetadata(messageSource)
+			metadataDto.slaveTable = detailTable.getMetadata(messageSource!!)
 
-		return metadataDto
-	}
+			return metadataDto
+		}
 
 	@Throws(CrudException::class)
 	fun getDetailAll(masterId: Int, page: Int, filter: F?): ArrayList<out ILuwakDto> {
 		val models = datasource.getAllDetail(masterId, page, filter)
 
-		return getDetailTable().getTableData(models)
+		return detailTable.getTableData(models)
 	}
 
 	@Throws(CrudException::class)
@@ -52,7 +49,7 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 		val models = datasource.getAllDetail(masterId, null, null)
 		val masterModel = datasource.getById(masterId)
 
-		return getDetailTable().toExcelDetail(models, masterModel!!, this)
+		return detailTable.toExcelDetail(models, masterModel!!, this)
 	}
 
 }
