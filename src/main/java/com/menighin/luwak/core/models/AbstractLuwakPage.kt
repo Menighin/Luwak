@@ -29,9 +29,7 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 		private set
 	var filterClass: Class<out ILuwakFilter>? = null
 
-	abstract val table: AbstractLuwakDataTable<M, out ILuwakDto>?
-
-	abstract val datasource: ILuwakDatasource<M, F>
+	abstract val table: AbstractLuwakDataTable<M, ILuwakDto, F>
 
 	/**
 	 * Gets the page metadata in order to built it.
@@ -52,8 +50,9 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 
 	val excelFile: XSSFWorkbook
 		get() {
-			val models = datasource.getAll(null, null)
-			return this.table!!.toExcel(models)
+			return XSSFWorkbook()
+//			val models = datasource.getAll(null, null)
+//			return this.table!!.toExcel(models)
 		}
 
 	// Instance initialization
@@ -77,32 +76,31 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 	}
 
 	@Throws(CrudException::class)
-	fun getAll(page: Int, filter: F): ArrayList<out ILuwakDto> {
-		val models = datasource.getAll(page, filter)
-		return table!!.getTableData(models)
+	fun getAll(page: Int, filter: F?): List<ILuwakDto> {
+		return table.getAll(page, filter)
 	}
 
 	@Throws(CrudException::class)
 	fun count(): Int? {
-		return datasource.count()
+		return table.count()
 	}
 
 	@Throws(CrudException::class, Exception::class)
 	fun create(dtoMap: Map<String, Any>): Boolean {
 		val dto = convertMapToDto(dtoMap)
-		return datasource.create(dto)
+		return table.create(dto)
 	}
 
 	@Throws(CrudException::class, Exception::class)
-	fun editModel(id: Int, dtoMap: Map<String, Any>): Boolean {
+	fun update(id: Int, dtoMap: Map<String, Any>): Boolean {
 		val dto = convertMapToDto(dtoMap)
-		return datasource.update(id, dto)
+		return table.update(id, dto)
 	}
 
 	@Throws(CrudException::class, Exception::class)
-	fun deleteModel(id: Int, dtoMap: Map<String, Any>): Boolean {
+	fun delete(id: Int, dtoMap: Map<String, Any>): Boolean {
 		val dto = convertMapToDto(dtoMap)
-		return datasource.delete(id, dto)
+		return table.delete(id, dto)
 	}
 
 	@Throws(IllegalAccessException::class, InstantiationException::class)

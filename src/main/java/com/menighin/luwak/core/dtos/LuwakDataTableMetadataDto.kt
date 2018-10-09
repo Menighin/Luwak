@@ -18,7 +18,7 @@ class LuwakDataTableMetadataDto {
 	var columns: ArrayList<FieldMetadataDto> = ArrayList()
 	var modalFields: ArrayList<FieldMetadataDto> = ArrayList()
 
-	constructor(table: AbstractLuwakDataTable<*, *>, messageSource: MessageSource) {
+	constructor(table: AbstractLuwakDataTable<*, *, *>, messageSource: MessageSource) {
 
 		val dtoClass = table.classDto
 		val tableClass = table.javaClass

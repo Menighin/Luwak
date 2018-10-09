@@ -56,7 +56,7 @@ public class LuwakPageController {
 
     @ResponseBody
     @GetMapping(value = "/{pageName}/getAll")
-    public CrudResponse<ArrayList<ILuwakDto>> getAll(@PathVariable("pageName") String pageName,
+    public CrudResponse<List<ILuwakDto>> getAll(@PathVariable("pageName") String pageName,
 									   @RequestParam(value = "page", required = false) Integer page,
 									   @RequestParam(value = "filter", required = false) String filterJson) {
 
@@ -64,7 +64,7 @@ public class LuwakPageController {
 
 		try {
 			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) mapper.readValue(filterJson, luwakPage.getFilterClass());
-			return new CrudResponse<ArrayList<ILuwakDto>>(ResponseStatusEnum.SUCCESS, luwakPage.getAll(page == null ? 0 : page.intValue(), filter), null);
+			return new CrudResponse<List<ILuwakDto>>(ResponseStatusEnum.SUCCESS, luwakPage.getAll(page == null ? 0 : page.intValue(), filter), null);
 		}
 		catch (CrudException ce) {
 			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, ce);
@@ -101,7 +101,7 @@ public class LuwakPageController {
 		AbstractLuwakPage page = luwakApplication.getPage(pageName);
 
 		try {
-			Boolean result = page.editModel(id, model);
+			Boolean result = page.update(id, model);
 			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, result, null);
 		}
 		catch (CrudException ce) {
@@ -120,7 +120,7 @@ public class LuwakPageController {
     	AbstractLuwakPage page = luwakApplication.getPage(pageName);
 
 		try {
-			Boolean result = page.deleteModel(id, model);
+			Boolean result = page.delete(id, model);
 			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, result, null);
 		}
 		catch (CrudException ce) {
@@ -150,7 +150,7 @@ public class LuwakPageController {
 
 	@ResponseBody
 	@GetMapping(value = "/{pageName}/detail/getAll")
-	public CrudResponse<ArrayList<ILuwakDto>> getDetailAll(@PathVariable("pageName") String pageName,
+	public CrudResponse<List<ILuwakDto>> getDetailAll(@PathVariable("pageName") String pageName,
 											 @RequestParam(value = "masterId") Integer masterId,
 											 @RequestParam(value = "page", required = false) Integer page,
 											 @RequestParam(value = "filter", required = false) String filterJson) {
@@ -159,7 +159,7 @@ public class LuwakPageController {
 
 		try {
 			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) mapper.readValue(filterJson, luwakPage.getFilterClass());
-			return new CrudResponse<ArrayList<ILuwakDto>>(ResponseStatusEnum.SUCCESS,
+			return new CrudResponse<List<ILuwakDto>>(ResponseStatusEnum.SUCCESS,
 					luwakPage.getDetailAll(masterId, page == null ? 0 : page.intValue(), filter), null);
 		}
 		catch (CrudException ce) {

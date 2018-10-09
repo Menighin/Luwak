@@ -6,6 +6,7 @@ import com.menighin.luwak.core.annotations.LuwakTable
 import com.menighin.luwak.core.annotations.MapModel
 import com.menighin.luwak.core.dtos.LuwakDataTableMetadataDto
 import com.menighin.luwak.core.enums.ColumnTypeEnum
+import com.menighin.luwak.core.interfaces.ILuwakDatasource
 import com.menighin.luwak.core.interfaces.ILuwakDto
 import com.menighin.luwak.core.interfaces.ILuwakFilter
 import com.menighin.luwak.core.interfaces.ILuwakModel
@@ -19,12 +20,14 @@ import java.lang.reflect.Field
 
 import java.lang.reflect.ParameterizedType
 
-abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto> {
+abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDto, F: ILuwakFilter {
 
 	var classModel: Class<M>? = null
 		private set
 	var classDto: Class<D>? = null
 		private set
+
+	abstract val datasource: ILuwakDatasource<M, F>
 
 	fun getMetadata(messageSource: MessageSource): LuwakDataTableMetadataDto {
 		return LuwakDataTableMetadataDto(this, messageSource)
@@ -38,7 +41,12 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto> {
 		classDto = parameterized.actualTypeArguments[1] as Class<D>
 	}
 
-	fun getTableData(models: ArrayList<M>): ArrayList<D> {
+	fun getAll(page: Int, filter: F?): List<D> {
+		val models = datasource.getAll(page, filter)
+		return this.toTableData(models)
+	}
+
+	open fun toTableData(models: List<M>): List<D> {
 		val dtos = ArrayList<D>()
 
 		val dtoFields = classDto!!.declaredFields
@@ -74,6 +82,22 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto> {
 		return dtos
 	}
 
+	fun count(): Int {
+		return datasource.count()
+	}
+
+	fun create(dto: D): Boolean {
+		return datasource.create(dto)
+	}
+
+	fun update(id: Int, dto: D): Boolean {
+		return datasource.update(id, dto)
+	}
+
+	fun delete(id: Int, dto: D): Boolean {
+		return datasource.delete(id, dto)
+	}
+
 	open fun getModalClass() : Class<*>? {
 		return classDto
 	}
@@ -87,7 +111,7 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto> {
 		if (!this::class.java.isAnnotationPresent(LuwakTable::class.java))
 			throw Exception("Table not annotated with @LuwakTable")
 
-		val dtos = this.getTableData(models)
+		val dtos = this.toTableData(models)
 
 		val tableTitle = this::class.java.getAnnotation(LuwakTable::class.java).title
 
@@ -105,8 +129,8 @@ abstract class AbstractLuwakDataTable<M : ILuwakModel, D : ILuwakDto> {
 //
 //		val tableTitle = this::class.java.getAnnotation(LuwakTable::class.java).title
 //
-//		val dtos = this.getTableData(models)
-//		val masterDto = page.table.getTableData(listOf(masterModel)).first()
+//		val dtos = this.toTableData(models)
+//		val masterDto = page.table.toTableData(listOf(masterModel)).first()
 //
 //		val masterDtoClass = page.table.classDto!!
 //

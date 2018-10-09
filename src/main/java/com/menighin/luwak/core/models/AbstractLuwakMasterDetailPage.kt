@@ -11,9 +11,9 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 
 	var detailClass: Class<out ILuwakModel>? = null
 
-	abstract override val datasource: ILuwakMasterDetailDatasource<M, D, F>
+	abstract val datasource: ILuwakMasterDetailDatasource<M, D, F>
 
-	abstract val detailTable: AbstractLuwakDataTable<D, *>
+	abstract val detailTable: AbstractLuwakDataTable<D, *, F>
 
 	init {
 		val superclass = javaClass.genericSuperclass
@@ -34,10 +34,8 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, D : ILuwakModel, F
 		}
 
 	@Throws(CrudException::class)
-	fun getDetailAll(masterId: Int, page: Int, filter: F?): ArrayList<out ILuwakDto> {
-		val models = datasource.getAllDetail(masterId, page, filter)
-
-		return detailTable.getTableData(models)
+	fun getDetailAll(masterId: Int, page: Int, filter: F): List<ILuwakDto> {
+		return detailTable.getAll(page, filter)
 	}
 
 	@Throws(CrudException::class)
