@@ -8,7 +8,7 @@ class LuwakPageMetadataDto {
 
 	var masterTable: LuwakDataTableMetadataDto? = null
 
-	var slaveTable: LuwakDataTableMetadataDto? = null
+	var detailTables: List<LuwakDataTableMetadataDto>? = null
 
 	var filters: ArrayList<LuwakFilterMetadataDto> = ArrayList()
 
