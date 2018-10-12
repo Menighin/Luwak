@@ -122,7 +122,7 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		return createWorkbook(tableTitle, headerLabels, excelFields, dtos, null, null)
 	}
 
-	fun toExcelDetail(models: ArrayList<M>, masterModel: ILuwakModel, page: AbstractLuwakMasterDetailPage<*, *, *>) : XSSFWorkbook {
+	fun toExcelDetail(models: ArrayList<M>, masterModel: ILuwakModel, page: AbstractLuwakMasterDetailPage<*, *>) : XSSFWorkbook {
 		// Check if annotation is correct
 //		if (!this::class.java.isAnnotationPresent(LuwakTable::class.java))
 //			throw Exception("Table not annotated with @LuwakTable")

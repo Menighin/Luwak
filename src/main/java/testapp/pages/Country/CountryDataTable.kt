@@ -10,31 +10,36 @@ import com.menighin.luwak.core.interfaces.ILuwakDto
 import com.menighin.luwak.core.models.AbstractLuwakDataTable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import testapp.models.City
 import testapp.models.Country
+import testapp.models.CountryData
 
 @Component
 @LuwakTable(title = "Country", canCreate = true, canDelete = true, canEdit = true)
-class CountryTable : AbstractLuwakDataTable<Country, CountryDto, CountryPageFilter>() {
+class CountryDataTable : AbstractLuwakDataTable<CountryData, CountryDataDto, CountryPageFilter>() {
 
 	@Autowired
-	lateinit var countryDatasource: ILuwakDatasource<Country, CountryPageFilter>
+	lateinit var countryDataDatasource: ILuwakDatasource<CountryData, CountryPageFilter>
 
-	override val datasource: ILuwakDatasource<Country, CountryPageFilter>
-		get() = countryDatasource
+	override val datasource: ILuwakDatasource<CountryData, CountryPageFilter>
+		get() = countryDataDatasource
 
 }
 
-data class CountryDto(
+class CountryDataDto(
 
 		@Label("ID")
-		@MapModel(Country.ID)
+		@MapModel(CountryData.ID)
 		@ColumnType(ColumnTypeEnum.HIDDEN)
 		var id: Int,
 
-		@Label("luwak.country.name")
-		@MapModel(Country.CODE)
+		@Label("Key")
+		@MapModel(CountryData.KEY)
 		@ColumnType(ColumnTypeEnum.TEXT)
-		var name: String
+		var name: String,
+
+		@Label("Value")
+		@MapModel(CountryData.VALUE)
+		@ColumnType(ColumnTypeEnum.INTEGER)
+		var value: Int
 
 ) : ILuwakDto

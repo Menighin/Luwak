@@ -13,22 +13,17 @@ import testapp.viewModels.CityViewModel
 import java.util.ArrayList
 
 @Repository
-open class CityDatasource: ILuwakDatasource<City, CityPageFilter> {
+open class CityDatasource() : ILuwakDatasource<City, CityPageFilter> {
 
-	private var countries: MutableList<Country> = ArrayList()
-	private var cities: MutableList<City> = ArrayList()
-
-	constructor() {
-		countries = mutableListOf(Country(0, "Brazil"), Country(1, "United States of America"), Country(2, "Portugal"))
-		cities = mutableListOf(
-				City(0, "Belo Horizonte", countries[0]),
-				City(1, "Sao Paulo", countries[0]),
-				City(2, "Denver", countries[1]),
-				City(3, "San Francisco", countries[1]),
-				City(4, "Porto", countries[2]),
-				City(5, "Lisboa", countries[2])
-		)
-	}
+	private var countries: MutableList<Country> = mutableListOf(Country(0, "Brazil"), Country(1, "United States of America"), Country(2, "Portugal"))
+	private var cities: MutableList<City> = mutableListOf(
+			City(0, "Belo Horizonte", countries[0]),
+			City(1, "Sao Paulo", countries[0]),
+			City(2, "Denver", countries[1]),
+			City(3, "San Francisco", countries[1]),
+			City(4, "Porto", countries[2]),
+			City(5, "Lisboa", countries[2])
+	)
 
 	override fun getById(id: Int): City? {
 		return cities.find { it.id == id }

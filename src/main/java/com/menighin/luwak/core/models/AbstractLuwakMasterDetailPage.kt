@@ -17,8 +17,7 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, F : ILuwakFilter> 
 	init {
 		val superclass = javaClass.genericSuperclass
 		val parameterized = superclass as ParameterizedType
-		detailClass = parameterized.actualTypeArguments[1] as Class<out ILuwakModel>
-		filterClass = parameterized.actualTypeArguments[2] as Class<out ILuwakFilter>
+		filterClass = parameterized.actualTypeArguments[1] as Class<out ILuwakFilter>
 	}
 
 	abstract fun getMasterFields() : ArrayList<String>
