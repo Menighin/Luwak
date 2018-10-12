@@ -5,16 +5,16 @@ import com.menighin.luwak.core.interfaces.ILuwakDatasource
 import com.menighin.luwak.core.interfaces.ILuwakDto
 import com.menighin.luwak.core.models.AbstractLuwakDataTable
 import org.springframework.stereotype.Component
-import testapp.models.Country
+import testapp.models.City
 
 @Component
-@LuwakTable(title = "Country", canCreate = true, canDelete = true, canEdit = true)
-class CountryTable : AbstractLuwakDataTable<Country, CountryDto, CountryPageFilter>() {
+@LuwakTable(title = "City", canCreate = true, canDelete = true, canEdit = true)
+class CityTable : AbstractLuwakDataTable<City, CityDto, CountryPageFilter>() {
 
-	override val datasource: ILuwakDatasource<Country, CountryPageFilter>
+	override val datasource: ILuwakDatasource<City, CountryPageFilter>
 		get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
 
 }
 
-class CountryDto(val code: String) : ILuwakDto
+class CityDto(val code: String) : ILuwakDto
