@@ -25,16 +25,16 @@ class CountryTable : AbstractLuwakDataTable<Country, CountryDto, CountryPageFilt
 
 }
 
-data class CountryDto(
+class CountryDto : ILuwakDto {
 
-		@Label("ID")
-		@MapModel(Country.ID)
-		@ColumnType(ColumnTypeEnum.HIDDEN)
-		var id: Int,
+	@Label("ID")
+	@MapModel(Country.ID)
+	@ColumnType(ColumnTypeEnum.HIDDEN)
+	var id: Int = 0
 
-		@Label("luwak.country.name")
-		@MapModel(Country.CODE)
-		@ColumnType(ColumnTypeEnum.TEXT)
-		var name: String
+	@Label("luwak.country.name")
+	@MapModel(Country.CODE)
+	@ColumnType(ColumnTypeEnum.TEXT)
+	lateinit var name: String
 
-) : ILuwakDto
+}

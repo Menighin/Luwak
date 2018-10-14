@@ -25,21 +25,20 @@ class CountryDataTable : AbstractLuwakDataTable<CountryData, CountryDataDto, Cou
 
 }
 
-class CountryDataDto(
+class CountryDataDto : ILuwakDto {
 
-		@Label("ID")
-		@MapModel(CountryData.ID)
-		@ColumnType(ColumnTypeEnum.HIDDEN)
-		var id: Int,
+	@Label("ID")
+	@MapModel(CountryData.ID)
+	@ColumnType(ColumnTypeEnum.HIDDEN)
+	var id: Int = 0
 
-		@Label("Key")
-		@MapModel(CountryData.KEY)
-		@ColumnType(ColumnTypeEnum.TEXT)
-		var name: String,
+	@Label("Key")
+	@MapModel(CountryData.KEY)
+	@ColumnType(ColumnTypeEnum.TEXT)
+	lateinit var name: String
 
-		@Label("Value")
-		@MapModel(CountryData.VALUE)
-		@ColumnType(ColumnTypeEnum.INTEGER)
-		var value: Int
-
-) : ILuwakDto
+	@Label("Value")
+	@MapModel(CountryData.VALUE)
+	@ColumnType(ColumnTypeEnum.INTEGER)
+	var value: Int = 0
+}

@@ -26,16 +26,16 @@ class CityTable : AbstractLuwakDataTable<City, CityDto, CountryPageFilter>() {
 
 }
 
-data class CityDto(
+class CityDto : ILuwakDto {
 
-		@Label("ID")
-		@MapModel(City.ID)
-		@ColumnType(ColumnTypeEnum.HIDDEN)
-		val id: Int,
+	@Label("ID")
+	@MapModel(City.ID)
+	@ColumnType(ColumnTypeEnum.HIDDEN)
+	var id: Int = 0
 
-		@Label("luwak.city.name")
-		@MapModel(City.NAME)
-		@ColumnType(ColumnTypeEnum.TEXT)
-		val code: String
+	@Label("luwak.city.name")
+	@MapModel(City.NAME)
+	@ColumnType(ColumnTypeEnum.TEXT)
+	lateinit var code: String
 
-) : ILuwakDto
+}
