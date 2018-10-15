@@ -11,6 +11,7 @@ import java.util.ArrayList
 
 @Component("HUEHUE")
 class CityDatasource : ILuwakDatasource<City, CountryPageFilter> {
+
 	private var countries: MutableList<Country> = mutableListOf(Country(0, "Brazil"), Country(1, "United States of America"), Country(2, "Portugal"))
 	private var cities: MutableList<City> = mutableListOf(
 			City(0, "Belo Horizonte", countries[0]),
@@ -58,8 +59,14 @@ class CityDatasource : ILuwakDatasource<City, CountryPageFilter> {
 		return true
 	}
 
-	override fun delete(masterId: Int?, id: Int, luwakDto: ILuwakDto?): Boolean {
+	override fun delete(masterId: Int?, id: Int): Boolean {
 		cities = cities.filter {it.id != id}.toMutableList()
+
+		return true
+	}
+
+	override fun deleteMany(masterId: Int?, ids: IntArray): Boolean {
+		cities = cities.filter { ids.contains(it.id) }.toMutableList()
 
 		return true
 	}

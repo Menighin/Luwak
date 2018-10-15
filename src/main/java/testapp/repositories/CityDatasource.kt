@@ -61,8 +61,14 @@ open class CityDatasource() : ILuwakDatasource<City, CityPageFilter> {
 		return true
 	}
 
-	override fun delete(masterId: Int?, id: Int, luwakDto: ILuwakDto?): Boolean {
+	override fun delete(masterId: Int?, id: Int): Boolean {
 		cities = cities.filter {it.id != id}.toMutableList()
+
+		return true
+	}
+
+	override fun deleteMany(masterId: Int?, ids: IntArray): Boolean {
+		cities = cities.filter { ids.contains(it.id) }.toMutableList()
 
 		return true
 	}

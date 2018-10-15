@@ -29,11 +29,10 @@ class CountryDataDatasource : ILuwakDatasource<CountryData, CountryPageFilter> {
 
 	override fun getAll(masterId: Int?, page: Int?, filter: CountryPageFilter?): ArrayList<CountryData> {
 		val filteredCountries =
-				countryDatas.filter {
-					countryData ->
+				countryDatas.filter { countryData ->
 					(countryData.country.id == masterId) &&
-					(filter?.country == null || filter.country == countryData.country.code) &&
-							(filter?.country == null  || filter.country == countryData.country.code)
+							(filter?.country == null || filter.country == countryData.country.code) &&
+							(filter?.country == null || filter.country == countryData.country.code)
 				}
 
 		return filteredCountries as ArrayList<CountryData>
@@ -47,8 +46,12 @@ class CountryDataDatasource : ILuwakDatasource<CountryData, CountryPageFilter> {
 		return true
 	}
 
-	override fun delete(masterId: Int?, id: Int, luwakDto: ILuwakDto?): Boolean {
+	override fun delete(masterId: Int?, id: Int): Boolean {
 		return true
+	}
+
+	override fun deleteMany(masterId: Int?, ids: IntArray): Boolean {
+		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
 	override fun count(masterId: Int?): Int {

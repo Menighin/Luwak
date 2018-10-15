@@ -27,14 +27,27 @@ class CountryDatasource : ILuwakDatasource<Country, CountryPageFilter> {
 	}
 
 	override fun create(masterId: Int?, luwakDto: ILuwakDto?): Boolean {
+		val countryDto = luwakDto as CountryDto
+		val lastId = countries.last().id
+		countries.add(Country(lastId + 1, countryDto.name))
+
 		return true
 	}
 
 	override fun update(masterId: Int?, id: Int, luwakDto: ILuwakDto?): Boolean {
+		var country = countries.find { it.id == id }!!
+		val countryDto = luwakDto as CountryDto
+		country.code = countryDto.name
 		return true
 	}
 
-	override fun delete(masterId: Int?, id: Int, luwakDto: ILuwakDto?): Boolean {
+	override fun delete(masterId: Int?, id: Int): Boolean {
+		countries.removeAll { it.id == id }
+		return true
+	}
+
+	override fun deleteMany(masterId: Int?, ids: IntArray): Boolean {
+		countries.removeAll { ids.contains(it.id) }
 		return true
 	}
 

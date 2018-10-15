@@ -98,9 +98,8 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 	}
 
 	@Throws(CrudException::class, Exception::class)
-	fun delete(id: Int, dtoMap: Map<String, Any>): Boolean {
-		val dto = convertMapToDto(dtoMap)
-		return table.delete(id, dto)
+	fun delete(id: Int): Boolean {
+		return table.delete(id)
 	}
 
 	@Throws(IllegalAccessException::class, InstantiationException::class)

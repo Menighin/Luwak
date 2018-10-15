@@ -94,8 +94,8 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		return datasource.update(null, id, dto)
 	}
 
-	fun delete(id: Int, dto: D): Boolean {
-		return datasource.delete(null, id, dto)
+	fun delete(id: Int): Boolean {
+		return datasource.delete(null, id)
 	}
 
 	open fun getModalClass() : Class<*>? {

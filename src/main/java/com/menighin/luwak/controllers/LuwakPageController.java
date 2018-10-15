@@ -116,13 +116,30 @@ public class LuwakPageController {
 	@ResponseBody
 	@DeleteMapping(value = "/{page}/delete/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public CrudResponse delete(@PathVariable("page") String pageName,
-								 @PathVariable("id") int id,
-								 @RequestBody Map<String, Object> model) {
+								 @PathVariable("id") int id) {
     	AbstractLuwakPage page = luwakApplication.getPage(pageName);
 
 		try {
-			Boolean result = page.delete(id, model);
+			Boolean result = page.delete(id);
 			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, result, null);
+		}
+		catch (CrudException ce) {
+			return new CrudResponse<Boolean>(ResponseStatusEnum.ERROR, null, ce);
+		}
+		catch (Exception e) {
+			return new CrudResponse<Boolean>(ResponseStatusEnum.ERROR, null, new CrudException(e.getMessage(), new HashMap()));
+		}
+	}
+
+	@ResponseBody
+	@DeleteMapping(value = "/{page}/deleteMany", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public CrudResponse deleteMany(@PathVariable("page") String pageName,
+							       @RequestBody int[] ids) {
+		AbstractLuwakPage page = luwakApplication.getPage(pageName);
+
+		try {
+			Boolean result = page.delete(0);
+			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, true, null);
 		}
 		catch (CrudException ce) {
 			return new CrudResponse<Boolean>(ResponseStatusEnum.ERROR, null, ce);
