@@ -138,8 +138,8 @@ public class LuwakPageController {
 		AbstractLuwakPage page = luwakApplication.getPage(pageName);
 
 		try {
-			Boolean result = page.delete(0);
-			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, true, null);
+			Boolean result = page.deleteMany(null, ids);
+			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, result, null);
 		}
 		catch (CrudException ce) {
 			return new CrudResponse<Boolean>(ResponseStatusEnum.ERROR, null, ce);

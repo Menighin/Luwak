@@ -102,6 +102,11 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 		return table.delete(id)
 	}
 
+	@Throws(CrudException::class, Exception::class)
+	fun deleteMany(masterId: Int?, ids: IntArray): Boolean {
+		return table.deleteMany(masterId, ids)
+	}
+
 	@Throws(IllegalAccessException::class, InstantiationException::class)
 	private fun convertMapToDto(model: Map<String, Any>): ILuwakDto {
 		// Generating DTO model

@@ -98,6 +98,10 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		return datasource.delete(null, id)
 	}
 
+	fun deleteMany(masterId: Int?, ids: IntArray): Boolean {
+		return datasource.deleteMany(masterId, ids)
+	}
+
 	open fun getModalClass() : Class<*>? {
 		return classDto
 	}
