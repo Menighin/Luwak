@@ -76,8 +76,8 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 	}
 
 	@Throws(CrudException::class)
-	fun getAll(page: Int, filter: F?): List<ILuwakDto> {
-		return table.getAll(page, filter)
+	fun getAll(masterId: Int?, page: Int, filter: F?): List<ILuwakDto> {
+		return table.getAll(masterId, page, filter)
 	}
 
 	@Throws(CrudException::class)

@@ -29,7 +29,7 @@ open class CityDatasource() : ILuwakDatasource<City, CityPageFilter> {
 		return cities.find { it.id == id }
 	}
 
-	override fun getAll(page: Int?, filter: CityPageFilter?): ArrayList<City> {
+	override fun getAll(masterId: Int?, page: Int?, filter: CityPageFilter?): ArrayList<City> {
 		val filteredCities =
 			cities.filter {
 				city ->
@@ -40,7 +40,7 @@ open class CityDatasource() : ILuwakDatasource<City, CityPageFilter> {
 		return filteredCities as ArrayList<City>
 	}
 
-	override fun create(luwakDto: ILuwakDto): Boolean {
+	override fun create(masterId: Int?, luwakDto: ILuwakDto): Boolean {
 		val dto = luwakDto as CityViewModel
 		val countryId = dto.countryName.toInt()
 		val country = countries.find { it.id == countryId }
@@ -52,7 +52,7 @@ open class CityDatasource() : ILuwakDatasource<City, CityPageFilter> {
 		return true
 	}
 
-	override fun update(id: Int, luwakDto: ILuwakDto?): Boolean {
+	override fun update(masterId: Int?, id: Int, luwakDto: ILuwakDto?): Boolean {
 		val dto = luwakDto as CityViewModel
 
 		val model = cities.find { it.id == id } ?: return false
@@ -61,13 +61,13 @@ open class CityDatasource() : ILuwakDatasource<City, CityPageFilter> {
 		return true
 	}
 
-	override fun delete(id: Int, luwakDto: ILuwakDto?): Boolean {
+	override fun delete(masterId: Int?, id: Int, luwakDto: ILuwakDto?): Boolean {
 		cities = cities.filter {it.id != id}.toMutableList()
 
 		return true
 	}
 
-	override fun count(): Int {
+	override fun count(masterId: Int?): Int {
 		return cities.count()
 	}
 }

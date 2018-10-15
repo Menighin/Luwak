@@ -41,8 +41,8 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		classDto = parameterized.actualTypeArguments[1] as Class<D>
 	}
 
-	fun getAll(page: Int, filter: F?): List<D> {
-		val models = datasource.getAll(page, filter)
+	fun getAll(masterId: Int?, page: Int, filter: F?): List<D> {
+		val models = datasource.getAll(masterId, page, filter)
 		return this.toTableData(models)
 	}
 
@@ -83,19 +83,19 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 	}
 
 	fun count(): Int {
-		return datasource.count()
+		return datasource.count(null)
 	}
 
 	fun create(dto: D): Boolean {
-		return datasource.create(dto)
+		return datasource.create(null, dto)
 	}
 
 	fun update(id: Int, dto: D): Boolean {
-		return datasource.update(id, dto)
+		return datasource.update(null, id, dto)
 	}
 
 	fun delete(id: Int, dto: D): Boolean {
-		return datasource.delete(id, dto)
+		return datasource.delete(null, id, dto)
 	}
 
 	open fun getModalClass() : Class<*>? {

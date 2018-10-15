@@ -64,7 +64,7 @@ public class LuwakPageController {
 
 		try {
 			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) mapper.readValue(filterJson, luwakPage.getFilterClass());
-			List<ILuwakDto> dtos = luwakPage.getAll(page == null ? 0 : page.intValue(), filter);
+			List<ILuwakDto> dtos = luwakPage.getAll(null, page == null ? 0 : page.intValue(), filter);
 			return new CrudResponse<List<ILuwakDto>>(ResponseStatusEnum.SUCCESS, dtos, null);
 		}
 		catch (CrudException ce) {

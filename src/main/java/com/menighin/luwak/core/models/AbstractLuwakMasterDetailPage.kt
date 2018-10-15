@@ -40,7 +40,7 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, F : ILuwakFilter> 
 	@Throws(CrudException::class)
 	fun getDetailAll(tableId: String, masterId: Int, page: Int, filter: F?): List<ILuwakDto> {
 		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
-		return table.getAll(page, filter)
+		return table.getAll(masterId, page, filter)
 	}
 
 	@Throws(CrudException::class)
