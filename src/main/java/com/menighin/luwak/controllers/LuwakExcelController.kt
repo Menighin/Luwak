@@ -42,12 +42,12 @@ open class LuwakExcelController {
 	}
 
 	@ResponseBody
-	@GetMapping(value = "/{pageName}/detail/export", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
-	fun exportDetail(@PathVariable pageName: String, @RequestParam(value = "masterId") masterId: Int) : ResponseEntity<FileSystemResource> {
-		val page = luwakApplication?.getPage(pageName) as AbstractLuwakMasterDetailPage<*, *>
+	@GetMapping(value = "/{pageName}/detail/{tableId}/export", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+	fun exportDetail(@PathVariable pageName: String, @PathVariable tableId: String) : ResponseEntity<FileSystemResource> {
+		val page = luwakApplication?.getPage(pageName) as AbstractLuwakMasterDetailPage<*, *>?
 
 		if (page != null) {
-			val wb = page.getExcelDetailFile(masterId)
+			val wb = page.getExcelDetailFile(tableId)
 			val filename = "${wb.getSheetName(0)}.xlsx";
 			val file = File("${wb.getSheetName(0)}.xlsx")
 			val fileStream = FileOutputStream(file)

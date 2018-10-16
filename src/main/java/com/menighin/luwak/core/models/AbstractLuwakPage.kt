@@ -40,8 +40,7 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 		get() {
 			val pageMetadata = LuwakPageMetadataDto()
 
-			if (table != null)
-				pageMetadata.masterTable = table!!.getMetadata(messageSource!!)
+			pageMetadata.masterTable = table.getMetadata(messageSource!!)
 
 			pageMetadata.filters = LuwakFilterMetadataDto.getFiltersFrom(filterClass!!)
 
@@ -50,9 +49,8 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 
 	val excelFile: XSSFWorkbook
 		get() {
-			return XSSFWorkbook()
-//			val models = datasource.getAll(null, null)
-//			return this.table!!.toExcel(models)
+			val models = table.datasource.getAll(null, null, null)
+			return this.table.toExcel(models)
 		}
 
 	// Instance initialization
@@ -81,25 +79,25 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 	}
 
 	@Throws(CrudException::class)
-	fun count(): Int? {
-		return table.count()
+	fun count(masterId: Int?): Int? {
+		return table.count(masterId)
 	}
 
 	@Throws(CrudException::class, Exception::class)
-	fun create(dtoMap: Map<String, Any>): Boolean {
+	fun create(masterId: Int?, dtoMap: Map<String, Any>): Boolean {
 		val dto = convertMapToDto(dtoMap)
-		return table.create(dto)
+		return table.create(masterId, dto)
 	}
 
 	@Throws(CrudException::class, Exception::class)
-	fun update(id: Int, dtoMap: Map<String, Any>): Boolean {
+	fun update(masterId: Int?, id: Int, dtoMap: Map<String, Any>): Boolean {
 		val dto = convertMapToDto(dtoMap)
-		return table.update(id, dto)
+		return table.update(masterId, id, dto)
 	}
 
 	@Throws(CrudException::class, Exception::class)
-	fun delete(id: Int): Boolean {
-		return table.delete(id)
+	fun delete(masterId: Int?, id: Int): Boolean {
+		return table.delete(masterId, id)
 	}
 
 	@Throws(CrudException::class, Exception::class)
@@ -108,7 +106,7 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 	}
 
 	@Throws(IllegalAccessException::class, InstantiationException::class)
-	private fun convertMapToDto(model: Map<String, Any>): ILuwakDto {
+	protected fun convertMapToDto(model: Map<String, Any>): ILuwakDto {
 		// Generating DTO model
 		val classDto = table!!.classDto
 		val dto = classDto!!.newInstance() as ILuwakDto

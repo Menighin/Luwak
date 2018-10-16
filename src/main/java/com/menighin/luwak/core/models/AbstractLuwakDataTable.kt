@@ -41,12 +41,12 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		classDto = parameterized.actualTypeArguments[1] as Class<D>
 	}
 
-	fun getAll(masterId: Int?, page: Int, filter: F?): List<D> {
+	fun getAll(masterId: Int?, page: Int?, filter: F?): List<D> {
 		val models = datasource.getAll(masterId, page, filter)
 		return this.toTableData(models)
 	}
 
-	open fun toTableData(models: List<M>): List<D> {
+	open fun toTableData(models: List<ILuwakModel>): List<D> {
 		val dtos = ArrayList<D>()
 
 		val dtoFields = classDto!!.declaredFields
@@ -82,20 +82,20 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		return dtos
 	}
 
-	fun count(): Int {
-		return datasource.count(null)
+	fun count(masterId: Int?): Int {
+		return datasource.count(masterId)
 	}
 
-	fun create(dto: D): Boolean {
-		return datasource.create(null, dto)
+	fun create(masterId: Int?, dto: D): Boolean {
+		return datasource.create(masterId, dto)
 	}
 
-	fun update(id: Int, dto: D): Boolean {
-		return datasource.update(null, id, dto)
+	fun update(masterId: Int?, id: Int, dto: D): Boolean {
+		return datasource.update(masterId, id, dto)
 	}
 
-	fun delete(id: Int): Boolean {
-		return datasource.delete(null, id)
+	fun delete(masterId: Int?, id: Int): Boolean {
+		return datasource.delete(masterId, id)
 	}
 
 	fun deleteMany(masterId: Int?, ids: IntArray): Boolean {
@@ -109,7 +109,7 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 	/**
 	 * Converts this Luwak table to an excel file respecting the DTO model
 	 */
-	fun toExcel(models: ArrayList<M>) : XSSFWorkbook {
+	fun toExcel(models: List<M>) : XSSFWorkbook {
 
 		// Check if annotation is correct
 		if (!this::class.java.isAnnotationPresent(LuwakTable::class.java))
@@ -126,27 +126,25 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		return createWorkbook(tableTitle, headerLabels, excelFields, dtos, null, null)
 	}
 
-	fun toExcelDetail(models: ArrayList<M>, masterModel: ILuwakModel, page: AbstractLuwakMasterDetailPage<*, *>) : XSSFWorkbook {
+	fun toExcelDetail(models: ArrayList<M>, page: AbstractLuwakMasterDetailPage<*, *>) : XSSFWorkbook {
 		// Check if annotation is correct
-//		if (!this::class.java.isAnnotationPresent(LuwakTable::class.java))
-//			throw Exception("Table not annotated with @LuwakTable")
-//
-//		val tableTitle = this::class.java.getAnnotation(LuwakTable::class.java).title
-//
-//		val dtos = this.toTableData(models)
-//		val masterDto = page.table.toTableData(listOf(masterModel)).first()
-//
-//		val masterDtoClass = page.table.classDto!!
-//
-//		// Get the fields from both master and detail table
-//		val excelFields = masterDtoClass.declaredFields
-//				.filter { it.isAnnotationPresent(Label::class.java) && page.getMasterFields().contains(it.name) } as ArrayList
-//
-//		excelFields.addAll(this.classDto!!.declaredFields.filter { it.isAnnotationPresent(Label::class.java)})
-//		val headerLabels = excelFields.map { f -> f.getAnnotation(Label::class.java).value }
-//
-//		return createWorkbook(tableTitle, headerLabels, excelFields, dtos, masterDtoClass, masterDto)
-		return XSSFWorkbook()
+		if (!this::class.java.isAnnotationPresent(LuwakTable::class.java))
+			throw Exception("Table not annotated with @LuwakTable")
+
+		val tableTitle = this::class.java.getAnnotation(LuwakTable::class.java).title
+
+		val dtos = this.toTableData(models)
+
+		val masterDtoClass = page.table.classDto!!
+
+		// Get the fields from both master and detail table
+		val excelFields = masterDtoClass.declaredFields
+				.filter { it.isAnnotationPresent(Label::class.java) && page.getMasterFields().contains(it.name) } as ArrayList
+
+		excelFields.addAll(this.classDto!!.declaredFields.filter { it.isAnnotationPresent(Label::class.java)})
+		val headerLabels = excelFields.map { f -> f.getAnnotation(Label::class.java).value }
+
+		return createWorkbook(tableTitle, headerLabels, excelFields, dtos, masterDtoClass, null)
 
 	}
 

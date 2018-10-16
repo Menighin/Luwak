@@ -44,17 +44,35 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, F : ILuwakFilter> 
 	}
 
 	@Throws(CrudException::class)
-	fun countDetail(masterId: Int): Int {
-		return 0
-//		return datasource.countDetail(masterId)
+	fun createDetail(tableId: String, masterId: Int, dtoMap: Map<String, Any>): Boolean {
+		val dto = convertMapToDto(dtoMap)
+		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
+		return table.create(masterId, dto)
 	}
 
-	fun getExcelDetailFile(masterId: Int): XSSFWorkbook {
-		return XSSFWorkbook()
-//		val models = datasource.getAllDetail(masterId, null, null)
-//		val masterModel = datasource.getById(masterId)
-//
-//		return detailTable.toExcelDetail(models, masterModel!!, this)
+	@Throws(CrudException::class)
+	fun updateDetail(tableId: String, masterId: Int, id: Int, dtoMap: Map<String, Any>): Boolean {
+		val dto = convertMapToDto(dtoMap)
+		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
+		return table.update(masterId, id, dto)
+	}
+
+	@Throws(CrudException::class)
+	fun deleteDetail(tableId: String, masterId: Int, id: Int): Boolean {
+		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
+		return table.delete(masterId, id)
+	}
+
+	@Throws(CrudException::class)
+	fun countDetail(tableId: String, masterId: Int): Int {
+		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
+		return table.count(masterId)
+	}
+
+	fun getExcelDetailFile(tableId: String): XSSFWorkbook {
+		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
+		val models = table.datasource.getAll(null, null, null)
+		return table.toExcelDetail(models, this)
 	}
 
 }
