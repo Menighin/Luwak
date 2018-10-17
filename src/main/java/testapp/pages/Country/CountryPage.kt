@@ -11,7 +11,7 @@ import testapp.models.Country
 import java.util.ArrayList
 
 @Component
-class CountryPage : AbstractLuwakMasterDetailPage<Country, CountryPageFilter>() {
+class CountryPage : AbstractLuwakMasterDetailPage<CountryPageFilter>() {
 
 	@Autowired
 	lateinit var countryTable: CountryTable
@@ -33,8 +33,8 @@ class CountryPage : AbstractLuwakMasterDetailPage<Country, CountryPageFilter>() 
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
-	override val table: AbstractLuwakDataTable<Country, ILuwakDto, CountryPageFilter>
-		get() = countryTable as AbstractLuwakDataTable<Country, ILuwakDto, CountryPageFilter>
+	override val table: AbstractLuwakDataTable<ILuwakModel, ILuwakDto, CountryPageFilter>
+		get() = countryTable as AbstractLuwakDataTable<ILuwakModel, ILuwakDto, CountryPageFilter>
 
 }
 

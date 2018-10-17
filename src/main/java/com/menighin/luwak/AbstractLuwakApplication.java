@@ -32,15 +32,15 @@ public abstract class AbstractLuwakApplication {
 		_pagesMap.put(type.getSimpleName(), type);
 	}
 
-	public AbstractLuwakPage<? extends ILuwakModel, ? extends ILuwakFilter> getPage(String pageName) {
+	public AbstractLuwakPage<? extends ILuwakFilter> getPage(String pageName) {
 		try {
 			Class pageClass = _pagesMap.get(pageName);
 			AbstractLuwakPage page = null;
 
 			if (pageClass.isAnnotationPresent(Component.class)) {
-				page = (AbstractLuwakPage<? extends ILuwakModel, ? extends ILuwakFilter>)applicationContext.getBean(pageClass);
+				page = (AbstractLuwakPage<? extends ILuwakFilter>)applicationContext.getBean(pageClass);
 			} else {
-				page = (AbstractLuwakPage<? extends ILuwakModel, ? extends ILuwakFilter>) pageClass.newInstance();
+				page = (AbstractLuwakPage<? extends ILuwakFilter>) pageClass.newInstance();
 			}
 
 			return page;

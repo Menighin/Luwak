@@ -20,16 +20,14 @@ import java.lang.reflect.Type
 import java.util.ArrayList
 
 @Component
-abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
+abstract class AbstractLuwakPage<F : ILuwakFilter> {
 
 	@Autowired
-	protected var messageSource: MessageSource? = null
+	protected lateinit var messageSource: MessageSource
 
-	var modelClass: Class<out ILuwakModel>? = null
-		private set
 	var filterClass: Class<out ILuwakFilter>? = null
 
-	abstract val table: AbstractLuwakDataTable<M, ILuwakDto, F>
+	abstract val table: AbstractLuwakDataTable<ILuwakModel, ILuwakDto, F>
 
 	/**
 	 * Gets the page metadata in order to built it.
@@ -40,7 +38,7 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 		get() {
 			val pageMetadata = LuwakPageMetadataDto()
 
-			pageMetadata.masterTable = table.getMetadata(messageSource!!)
+			pageMetadata.masterTable = table.getMetadata(messageSource)
 
 			pageMetadata.filters = LuwakFilterMetadataDto.getFiltersFrom(filterClass!!)
 
@@ -57,8 +55,7 @@ abstract class AbstractLuwakPage<M : ILuwakModel, F : ILuwakFilter> {
 	init {
 		val superclass = javaClass.genericSuperclass
 		val parameterized = superclass as ParameterizedType
-		modelClass = parameterized.actualTypeArguments[0] as Class<out ILuwakModel>
-		filterClass = parameterized.actualTypeArguments[1] as Class<out ILuwakFilter>
+		filterClass = parameterized.actualTypeArguments[0] as Class<out ILuwakFilter>
 	}
 
 	/**

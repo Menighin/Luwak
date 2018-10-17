@@ -44,7 +44,7 @@ open class LuwakExcelController {
 	@ResponseBody
 	@GetMapping(value = "/{pageName}/detail/{tableId}/export", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
 	fun exportDetail(@PathVariable pageName: String, @PathVariable tableId: String) : ResponseEntity<FileSystemResource> {
-		val page = luwakApplication?.getPage(pageName) as AbstractLuwakMasterDetailPage<*, *>?
+		val page = luwakApplication?.getPage(pageName) as AbstractLuwakMasterDetailPage<*>?
 
 		if (page != null) {
 			val wb = page.getExcelDetailFile(tableId)

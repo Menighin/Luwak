@@ -8,16 +8,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.lang.reflect.ParameterizedType
 import java.util.ArrayList
 
-abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, F : ILuwakFilter> : AbstractLuwakPage<M, F>() {
+abstract class AbstractLuwakMasterDetailPage<F : ILuwakFilter> : AbstractLuwakPage<F>() {
 
-	var detailClass: Class<out ILuwakModel>? = null
+	lateinit var detailClass: Class<out ILuwakModel>
 
 	abstract val detailTables: List<AbstractLuwakDataTable<ILuwakModel, ILuwakDto, F>>
 
 	init {
 		val superclass = javaClass.genericSuperclass
 		val parameterized = superclass as ParameterizedType
-		filterClass = parameterized.actualTypeArguments[1] as Class<out ILuwakFilter>
+		filterClass = parameterized.actualTypeArguments[0] as Class<out ILuwakFilter>
 	}
 
 	abstract fun getMasterFields() : ArrayList<String>
