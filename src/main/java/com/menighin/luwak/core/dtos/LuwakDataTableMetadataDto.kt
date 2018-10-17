@@ -1,6 +1,7 @@
 package com.menighin.luwak.core.dtos
 
 import com.menighin.luwak.core.annotations.ColumnType
+import com.menighin.luwak.core.annotations.ExcelOnly
 import com.menighin.luwak.core.annotations.Label
 import com.menighin.luwak.core.annotations.LuwakTable
 import com.menighin.luwak.core.enums.ColumnTypeEnum
@@ -34,7 +35,7 @@ class LuwakDataTableMetadataDto {
 		canDelete = luwakTableAnnotation.canDelete
 		canEdit = luwakTableAnnotation.canEdit
 
-		val columnFields = dtoClass!!.declaredFields
+		val columnFields = dtoClass.declaredFields.filter{ !it.isAnnotationPresent(ExcelOnly::class.java) }
 
 		// Iterate through fields generating the metadata
 		for (f in columnFields) {
@@ -47,7 +48,7 @@ class LuwakDataTableMetadataDto {
 			this.columns.add(FieldMetadataDto(f.name, label, columnTypeEnum))
 		}
 
-		val modalFields = table.getModalClass()!!.declaredFields
+		val modalFields = table.getModalClass()!!.declaredFields.filter{ !it.isAnnotationPresent(ExcelOnly::class.java) }
 		for (f in modalFields) {
 			if (!f.isAnnotationPresent(Label::class.java)) continue
 

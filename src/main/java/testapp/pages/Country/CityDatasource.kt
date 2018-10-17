@@ -30,7 +30,7 @@ class CityDatasource : ILuwakDatasource<City, CountryPageFilter> {
 		val filteredCities =
 				cities.filter {
 					city ->
-					(city.country.id == masterId) &&
+					(city.country.id == masterId || masterId == null) &&
 					(filter?.city == null || filter.city == city.name) &&
 							(filter?.city == null  || filter.city == city.name)
 				}

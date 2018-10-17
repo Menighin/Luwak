@@ -72,7 +72,7 @@ abstract class AbstractLuwakMasterDetailPage<M : ILuwakModel, F : ILuwakFilter> 
 	fun getExcelDetailFile(tableId: String): XSSFWorkbook {
 		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
 		val models = table.datasource.getAll(null, null, null)
-		return table.toExcelDetail(models, this)
+		return table.toExcel(models)
 	}
 
 }

@@ -1,9 +1,6 @@
 package com.menighin.luwak.core.models
 
-import com.menighin.luwak.core.annotations.ColumnType
-import com.menighin.luwak.core.annotations.Label
-import com.menighin.luwak.core.annotations.LuwakTable
-import com.menighin.luwak.core.annotations.MapModel
+import com.menighin.luwak.core.annotations.*
 import com.menighin.luwak.core.dtos.LuwakDataTableMetadataDto
 import com.menighin.luwak.core.enums.ColumnTypeEnum
 import com.menighin.luwak.core.interfaces.ILuwakDatasource
@@ -22,9 +19,9 @@ import java.lang.reflect.ParameterizedType
 
 abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDto, F: ILuwakFilter {
 
-	var classModel: Class<M>? = null
+	var classModel: Class<M>
 		private set
-	var classDto: Class<D>? = null
+	var classDto: Class<D>
 		private set
 
 	abstract val datasource: ILuwakDatasource<M, F>
@@ -43,17 +40,19 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 
 	fun getAll(masterId: Int?, page: Int?, filter: F?): List<D> {
 		val models = datasource.getAll(masterId, page, filter)
-		return this.toTableData(models)
+		val dtos = this.toTableData(models)
+		return dtos
 	}
 
 	open fun toTableData(models: List<ILuwakModel>): List<D> {
 		val dtos = ArrayList<D>()
 
-		val dtoFields = classDto!!.declaredFields
+		// Get fields that are not ExcelOnly
+		val dtoFields = classDto.declaredFields.filter { isLuwakField(it) }
 
 		for (m in models) {
 			try {
-				val dto = classDto!!.newInstance()
+				val dto = classDto.newInstance()
 
 				// Mapping fields to Dto
 				for (f in dtoFields) {
@@ -119,36 +118,18 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 
 		val tableTitle = this::class.java.getAnnotation(LuwakTable::class.java).title
 
-		val dtoFields = classDto!!.declaredFields
-		val excelFields = dtoFields.filter { f -> f.isAnnotationPresent(Label::class.java) }
+		val excelFields = classDto.declaredFields.filter {
+			isLuwakField(it) &&
+			(!it.isAnnotationPresent(ColumnType::class.java) ||
+					it.isAnnotationPresent(ColumnType::class.java) && it.getAnnotation(ColumnType::class.java).value != ColumnTypeEnum.HIDDEN)
+		}
 		val headerLabels = excelFields.map { f -> f.getAnnotation(Label::class.java).value }
 
-		return createWorkbook(tableTitle, headerLabels, excelFields, dtos, null, null)
+		return createWorkbook(tableTitle, headerLabels, excelFields, dtos)
 	}
 
-	fun toExcelDetail(models: ArrayList<M>, page: AbstractLuwakMasterDetailPage<*, *>) : XSSFWorkbook {
-		// Check if annotation is correct
-		if (!this::class.java.isAnnotationPresent(LuwakTable::class.java))
-			throw Exception("Table not annotated with @LuwakTable")
 
-		val tableTitle = this::class.java.getAnnotation(LuwakTable::class.java).title
-
-		val dtos = this.toTableData(models)
-
-		val masterDtoClass = page.table.classDto!!
-
-		// Get the fields from both master and detail table
-		val excelFields = masterDtoClass.declaredFields
-				.filter { it.isAnnotationPresent(Label::class.java) && page.getMasterFields().contains(it.name) } as ArrayList
-
-		excelFields.addAll(this.classDto!!.declaredFields.filter { it.isAnnotationPresent(Label::class.java)})
-		val headerLabels = excelFields.map { f -> f.getAnnotation(Label::class.java).value }
-
-		return createWorkbook(tableTitle, headerLabels, excelFields, dtos, masterDtoClass, null)
-
-	}
-
-	private fun createWorkbook(tableTitle: String, headerLabels: List<String>, excelFields: List<Field>, dtos: List<ILuwakDto>, masterDtoClass : Class<*>?, masterDto: ILuwakDto?) : XSSFWorkbook {
+	private fun createWorkbook(tableTitle: String, headerLabels: List<String>, excelFields: List<Field>, dtos: List<ILuwakDto>) : XSSFWorkbook {
 
 		// Setting up workbook
 		val workbook = XSSFWorkbook()
@@ -195,7 +176,7 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 					columnType = field.getAnnotation(ColumnType::class.java).value
 
 				field.isAccessible = true
-				val value = if (field.declaringClass === masterDtoClass) field.get(masterDto) else field.get(dto)
+				val value = field.get(dto)
 				field.isAccessible = false
 
 				val cell = row.createCell(i)
@@ -215,4 +196,9 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		return workbook
 
 	}
+
+	private fun isLuwakField(f: Field) : Boolean {
+		return f.isAnnotationPresent(Label::class.java)
+	}
+
 }

@@ -1,9 +1,7 @@
 package testapp.pages.Country
 
-import com.menighin.luwak.core.annotations.ColumnType
-import com.menighin.luwak.core.annotations.Label
-import com.menighin.luwak.core.annotations.LuwakTable
-import com.menighin.luwak.core.annotations.MapModel
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.menighin.luwak.core.annotations.*
 import com.menighin.luwak.core.enums.ColumnTypeEnum
 import com.menighin.luwak.core.interfaces.ILuwakDatasource
 import com.menighin.luwak.core.interfaces.ILuwakDto
@@ -27,6 +25,13 @@ class CityTable : AbstractLuwakDataTable<City, CityDto, CountryPageFilter>() {
 }
 
 class CityDto : ILuwakDto {
+
+	@Label("Country")
+	@MapModel("country.code")
+	@ColumnType(ColumnTypeEnum.TEXT)
+	@ExcelOnly
+	@JsonIgnore
+	var countryCode: String? = null
 
 	@Label("ID")
 	@MapModel(City.ID)
