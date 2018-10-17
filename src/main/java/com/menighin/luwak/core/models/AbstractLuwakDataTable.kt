@@ -38,7 +38,7 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		classDto = parameterized.actualTypeArguments[1] as Class<D>
 	}
 
-	fun getAll(masterId: Int?, page: Int?, filter: F?): List<D> {
+	fun getAll(masterId: Long?, page: Int?, filter: F?): List<D> {
 		val models = datasource.getAll(masterId, page, filter)
 		val dtos = this.toTableData(models)
 		return dtos
@@ -81,23 +81,23 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		return dtos
 	}
 
-	fun count(masterId: Int?): Int {
+	fun count(masterId: Long?): Int {
 		return datasource.count(masterId)
 	}
 
-	fun create(masterId: Int?, dto: D): Boolean {
+	fun create(masterId: Long?, dto: D): Boolean {
 		return datasource.create(masterId, dto)
 	}
 
-	fun update(masterId: Int?, id: Int, dto: D): Boolean {
+	fun update(masterId: Long?, id: Long, dto: D): Boolean {
 		return datasource.update(masterId, id, dto)
 	}
 
-	fun delete(masterId: Int?, id: Int): Boolean {
+	fun delete(masterId: Long?, id: Long): Boolean {
 		return datasource.delete(masterId, id)
 	}
 
-	fun deleteMany(masterId: Int?, ids: IntArray): Boolean {
+	fun deleteMany(masterId: Long?, ids: LongArray): Boolean {
 		return datasource.deleteMany(masterId, ids)
 	}
 

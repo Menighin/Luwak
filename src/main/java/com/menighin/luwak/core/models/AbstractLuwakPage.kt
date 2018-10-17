@@ -71,34 +71,34 @@ abstract class AbstractLuwakPage<F : ILuwakFilter> {
 	}
 
 	@Throws(CrudException::class)
-	fun getAll(masterId: Int?, page: Int, filter: F?): List<ILuwakDto> {
+	fun getAll(masterId: Long?, page: Int, filter: F?): List<ILuwakDto> {
 		return table.getAll(masterId, page, filter)
 	}
 
 	@Throws(CrudException::class)
-	fun count(masterId: Int?): Int? {
+	fun count(masterId: Long?): Int? {
 		return table.count(masterId)
 	}
 
 	@Throws(CrudException::class, Exception::class)
-	fun create(masterId: Int?, dtoMap: Map<String, Any>): Boolean {
+	fun create(masterId: Long?, dtoMap: Map<String, Any>): Boolean {
 		val dto = convertMapToDto(dtoMap)
 		return table.create(masterId, dto)
 	}
 
 	@Throws(CrudException::class, Exception::class)
-	fun update(masterId: Int?, id: Int, dtoMap: Map<String, Any>): Boolean {
+	fun update(masterId: Long?, id: Long, dtoMap: Map<String, Any>): Boolean {
 		val dto = convertMapToDto(dtoMap)
 		return table.update(masterId, id, dto)
 	}
 
 	@Throws(CrudException::class, Exception::class)
-	fun delete(masterId: Int?, id: Int): Boolean {
+	fun delete(masterId: Long?, id: Long): Boolean {
 		return table.delete(masterId, id)
 	}
 
 	@Throws(CrudException::class, Exception::class)
-	fun deleteMany(masterId: Int?, ids: IntArray): Boolean {
+	fun deleteMany(masterId: Long?, ids: LongArray): Boolean {
 		return table.deleteMany(masterId, ids)
 	}
 

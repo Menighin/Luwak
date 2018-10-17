@@ -22,11 +22,11 @@ class CityDatasource : ILuwakDatasource<City, CountryPageFilter> {
 			City(5, "Lisboa", countries[2])
 	)
 
-	override fun getById(id: Int): City? {
-		return cities.find { it.id == id }
+	override fun getById(id: Long): City {
+		return cities.find { it.id == id }!!
 	}
 
-	override fun getAll(masterId: Int?, page: Int?, filter: CountryPageFilter?): ArrayList<City> {
+	override fun getAll(masterId: Long?, page: Int?, filter: CountryPageFilter?): ArrayList<City> {
 		val filteredCities =
 				cities.filter {
 					city ->
@@ -38,9 +38,9 @@ class CityDatasource : ILuwakDatasource<City, CountryPageFilter> {
 		return filteredCities as ArrayList<City>
 	}
 
-	override fun create(masterId: Int?, luwakDto: ILuwakDto): Boolean {
+	override fun create(masterId: Long?, luwakDto: ILuwakDto): Boolean {
 		val dto = luwakDto as CityViewModel
-		val countryId = dto.countryName.toInt()
+		val countryId = dto.countryName.toLong()
 		val country = countries.find { it.id == countryId }
 		var lastId = cities.sortedBy { it.id }.last().id
 		val newCity = City(++lastId, dto.cityName, country)
@@ -50,7 +50,7 @@ class CityDatasource : ILuwakDatasource<City, CountryPageFilter> {
 		return true
 	}
 
-	override fun update(masterId: Int?, id: Int, luwakDto: ILuwakDto?): Boolean {
+	override fun update(masterId: Long?, id: Long, luwakDto: ILuwakDto): Boolean {
 		val dto = luwakDto as CityViewModel
 
 		val model = cities.find { it.id == id } ?: return false
@@ -59,19 +59,19 @@ class CityDatasource : ILuwakDatasource<City, CountryPageFilter> {
 		return true
 	}
 
-	override fun delete(masterId: Int?, id: Int): Boolean {
+	override fun delete(masterId: Long?, id: Long): Boolean {
 		cities = cities.filter {it.id != id}.toMutableList()
 
 		return true
 	}
 
-	override fun deleteMany(masterId: Int?, ids: IntArray): Boolean {
+	override fun deleteMany(masterId: Long?, ids: LongArray): Boolean {
 		cities = cities.filter { ids.contains(it.id) }.toMutableList()
 
 		return true
 	}
 
-	override fun count(masterId: Int?): Int {
+	override fun count(masterId: Long?): Int {
 		return cities.count()
 	}
 }

@@ -23,11 +23,11 @@ class CountryDataDatasource : ILuwakDatasource<CountryData, CountryPageFilter> {
 			CountryData(3, countries[0], "GDP", 1262693346)
 	)
 
-	override fun getById(id: Int): CountryData? {
-		return countryDatas.find{it.id == id}
+	override fun getById(id: Long): CountryData {
+		return countryDatas.find{it.id == id}!!
 	}
 
-	override fun getAll(masterId: Int?, page: Int?, filter: CountryPageFilter?): ArrayList<CountryData> {
+	override fun getAll(masterId: Long?, page: Int?, filter: CountryPageFilter?): ArrayList<CountryData> {
 		val filteredCountries =
 				countryDatas.filter { countryData ->
 					(countryData.country.id == masterId) &&
@@ -38,23 +38,23 @@ class CountryDataDatasource : ILuwakDatasource<CountryData, CountryPageFilter> {
 		return filteredCountries as ArrayList<CountryData>
 	}
 
-	override fun create(masterId: Int?, luwakDto: ILuwakDto?): Boolean {
+	override fun create(masterId: Long?, luwakDto: ILuwakDto): Boolean {
 		return true
 	}
 
-	override fun update(masterId: Int?, id: Int, luwakDto: ILuwakDto?): Boolean {
+	override fun update(masterId: Long?, id: Long, luwakDto: ILuwakDto): Boolean {
 		return true
 	}
 
-	override fun delete(masterId: Int?, id: Int): Boolean {
+	override fun delete(masterId: Long?, id: Long): Boolean {
 		return true
 	}
 
-	override fun deleteMany(masterId: Int?, ids: IntArray): Boolean {
+	override fun deleteMany(masterId: Long?, ids: LongArray): Boolean {
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
-	override fun count(masterId: Int?): Int {
+	override fun count(masterId: Long?): Int {
 		return countryDatas.count()
 	}
 }

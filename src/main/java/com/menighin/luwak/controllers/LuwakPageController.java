@@ -134,7 +134,7 @@ public class LuwakPageController {
 	@ResponseBody
 	@DeleteMapping(value = "/{page}/deleteMany", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public CrudResponse deleteMany(@PathVariable("page") String pageName,
-							       @RequestBody int[] ids) {
+							       @RequestBody long[] ids) {
 		AbstractLuwakPage page = luwakApplication.getPage(pageName);
 
 		try {

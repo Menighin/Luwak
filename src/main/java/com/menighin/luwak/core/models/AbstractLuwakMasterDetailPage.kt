@@ -38,33 +38,33 @@ abstract class AbstractLuwakMasterDetailPage<F : ILuwakFilter> : AbstractLuwakPa
 		}
 
 	@Throws(CrudException::class)
-	fun getDetailAll(tableId: String, masterId: Int, page: Int, filter: F?): List<ILuwakDto> {
+	fun getDetailAll(tableId: String, masterId: Long, page: Int, filter: F?): List<ILuwakDto> {
 		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
 		return table.getAll(masterId, page, filter)
 	}
 
 	@Throws(CrudException::class)
-	fun createDetail(tableId: String, masterId: Int, dtoMap: Map<String, Any>): Boolean {
+	fun createDetail(tableId: String, masterId: Long, dtoMap: Map<String, Any>): Boolean {
 		val dto = convertMapToDto(dtoMap)
 		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
 		return table.create(masterId, dto)
 	}
 
 	@Throws(CrudException::class)
-	fun updateDetail(tableId: String, masterId: Int, id: Int, dtoMap: Map<String, Any>): Boolean {
+	fun updateDetail(tableId: String, masterId: Long, id: Long, dtoMap: Map<String, Any>): Boolean {
 		val dto = convertMapToDto(dtoMap)
 		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
 		return table.update(masterId, id, dto)
 	}
 
 	@Throws(CrudException::class)
-	fun deleteDetail(tableId: String, masterId: Int, id: Int): Boolean {
+	fun deleteDetail(tableId: String, masterId: Long, id: Long): Boolean {
 		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
 		return table.delete(masterId, id)
 	}
 
 	@Throws(CrudException::class)
-	fun countDetail(tableId: String, masterId: Int): Int {
+	fun countDetail(tableId: String, masterId: Long): Int {
 		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
 		return table.count(masterId)
 	}
