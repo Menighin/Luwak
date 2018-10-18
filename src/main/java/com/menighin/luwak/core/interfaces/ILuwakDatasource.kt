@@ -1,13 +1,10 @@
 package com.menighin.luwak.core.interfaces
 
-import com.menighin.luwak.core.dtos.CrudResponse
-import java.util.ArrayList
-
 interface ILuwakDatasource<M : ILuwakModel, F : ILuwakFilter> {
 
 	fun getById(id: Long): M
 
-	fun getAll(masterId: Long?, page: Int?, filter: F?): List<M>
+	fun getAll(masterId: Long?, page: Int?, filter: F?, sort: HashMap<String, String>?): List<M>
 
 	fun create(masterId: Long?, luwakDto: ILuwakDto): Boolean
 

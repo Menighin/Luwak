@@ -38,9 +38,9 @@ abstract class AbstractLuwakMasterDetailPage<F : ILuwakFilter> : AbstractLuwakPa
 		}
 
 	@Throws(CrudException::class)
-	fun getDetailAll(tableId: String, masterId: Long, page: Int, filter: F?): List<ILuwakDto> {
+	fun getDetailAll(tableId: String, masterId: Long, page: Int, filter: F?, sort: HashMap<String, String>?): List<ILuwakDto> {
 		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
-		return table.getAll(masterId, page, filter)
+		return table.getAll(masterId, page, filter, sort)
 	}
 
 	@Throws(CrudException::class)
@@ -71,7 +71,7 @@ abstract class AbstractLuwakMasterDetailPage<F : ILuwakFilter> : AbstractLuwakPa
 
 	fun getExcelDetailFile(tableId: String): XSSFWorkbook {
 		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
-		val models = table.datasource.getAll(null, null, null)
+		val models = table.datasource.getAll(null, null, null, null)
 		return table.toExcel(models)
 	}
 

@@ -55,16 +55,21 @@ public class LuwakPageController {
 	}
 
     @ResponseBody
-    @GetMapping(value = "/{pageName}/getAll")
+    @PostMapping(value = "/{pageName}/getAll")
     public CrudResponse<List<ILuwakDto>> getAll(@PathVariable("pageName") String pageName,
 									   @RequestParam(value = "page", required = false) Integer page,
-									   @RequestParam(value = "filter", required = false) String filterJson) {
+									   @RequestBody(required = false) Map<String, Object> options) {
 
 		AbstractLuwakPage luwakPage = luwakApplication.getPage(pageName);
 
 		try {
-			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) mapper.readValue(filterJson, luwakPage.getFilterClass());
-			List<ILuwakDto> dtos = luwakPage.getAll(null, page == null ? 0 : page.intValue(), filter);
+			ILuwakFilter filter = options == null || !options.containsKey("filter")
+					? null : (ILuwakFilter) mapper.convertValue(options.get("filter"), luwakPage.getFilterClass());
+
+			HashMap<String, String> sort = options == null || !options.containsKey("sort")
+					? null : (HashMap<String, String>) options.get("sort");
+
+			List<ILuwakDto> dtos = luwakPage.getAll(null, page == null ? 0 : page.intValue(), filter, sort);
 			return new CrudResponse<List<ILuwakDto>>(ResponseStatusEnum.SUCCESS, dtos, null);
 		}
 		catch (CrudException ce) {
@@ -167,19 +172,24 @@ public class LuwakPageController {
 	}
 
 	@ResponseBody
-	@GetMapping(value = "/{pageName}/detail/{tableId}/getAll")
+	@PutMapping(value = "/{pageName}/detail/{tableId}/getAll")
 	public CrudResponse<List<ILuwakDto>> getDetailAll(@PathVariable("pageName") String pageName,
 													  @PathVariable("tableId") String tableId,
 													  @RequestParam(value = "masterId") Integer masterId,
 													  @RequestParam(value = "page", required = false) Integer page,
-													  @RequestParam(value = "filter", required = false) String filterJson) {
+													  @RequestBody(required = false) Map<String, Object> options) {
 
 		AbstractLuwakMasterDetailPage luwakPage = (AbstractLuwakMasterDetailPage) luwakApplication.getPage(pageName);
 
 		try {
-			ILuwakFilter filter = filterJson == null ? null : (ILuwakFilter) mapper.readValue(filterJson, luwakPage.getFilterClass());
+			ILuwakFilter filter = options == null || !options.containsKey("filter")
+					? null : (ILuwakFilter) mapper.convertValue(options.get("filter"), luwakPage.getFilterClass());
+
+			HashMap<String, String> sort = options == null || !options.containsKey("sort")
+					? null : (HashMap<String, String>) options.get("sort");
+
 			return new CrudResponse<List<ILuwakDto>>(ResponseStatusEnum.SUCCESS,
-					luwakPage.getDetailAll(tableId, masterId, page == null ? 0 : page.intValue(), filter), null);
+					luwakPage.getDetailAll(tableId, masterId, page == null ? 0 : page.intValue(), filter, sort), null);
 		}
 		catch (CrudException ce) {
 			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, ce);

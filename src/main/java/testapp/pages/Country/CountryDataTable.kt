@@ -35,7 +35,7 @@ class CountryDataDto : ILuwakDto {
 	@Label("ID")
 	@MapModel(CountryData.ID)
 	@ColumnType(ColumnTypeEnum.HIDDEN)
-	var id: Int = 0
+	var id: Long = 0
 
 	@Label("Key")
 	@MapModel(CountryData.KEY)

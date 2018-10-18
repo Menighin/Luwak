@@ -26,7 +26,7 @@ class CityDatasource : ILuwakDatasource<City, CountryPageFilter> {
 		return cities.find { it.id == id }!!
 	}
 
-	override fun getAll(masterId: Long?, page: Int?, filter: CountryPageFilter?): ArrayList<City> {
+	override fun getAll(masterId: Long?, page: Int?, filter: CountryPageFilter?, sort: HashMap<String, String>?): ArrayList<City> {
 		val filteredCities =
 				cities.filter {
 					city ->

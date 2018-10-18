@@ -38,8 +38,8 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		classDto = parameterized.actualTypeArguments[1] as Class<D>
 	}
 
-	fun getAll(masterId: Long?, page: Int?, filter: F?): List<D> {
-		val models = datasource.getAll(masterId, page, filter)
+	fun getAll(masterId: Long?, page: Int?, filter: F?, sort: HashMap<String, String>?): List<D> {
+		val models = datasource.getAll(masterId, page, filter, sort)
 		val dtos = this.toTableData(models)
 		return dtos
 	}
@@ -51,31 +51,27 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		val dtoFields = classDto.declaredFields.filter { isLuwakField(it) }
 
 		for (m in models) {
-			try {
-				val dto = classDto.newInstance()
+			val dto = classDto.newInstance()
 
-				// Mapping fields to Dto
-				for (f in dtoFields) {
-					if (!f.isAnnotationPresent(MapModel::class.java)) continue
+			// Mapping fields to Dto
+			for (f in dtoFields) {
+				if (!f.isAnnotationPresent(MapModel::class.java)) continue
 
-					val mapModel = f.getAnnotation(MapModel::class.java).value.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+				val mapModel = f.getAnnotation(MapModel::class.java).value.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-					// Access all objects until last level
-					var leaf: Any = m
-					for (map in mapModel) {
-						val fieldName = map.substring(0, 1).toUpperCase() + map.substring(1)
-						leaf = leaf.javaClass.getMethod("get$fieldName").invoke(leaf)
-					}
-
-					f.isAccessible = true
-					f.set(dto, leaf)
-					f.isAccessible = false
+				// Access all objects until last level
+				var leaf: Any = m
+				for (map in mapModel) {
+					val fieldName = map.substring(0, 1).toUpperCase() + map.substring(1)
+					leaf = leaf.javaClass.getMethod("get$fieldName").invoke(leaf)
 				}
 
-				dtos.add(dto)
-			} catch (e: Exception) {
-				e.printStackTrace()
+				f.isAccessible = true
+				f.set(dto, leaf)
+				f.isAccessible = false
 			}
+
+			dtos.add(dto)
 
 		}
 		return dtos

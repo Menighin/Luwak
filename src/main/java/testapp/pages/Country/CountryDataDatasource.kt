@@ -27,7 +27,7 @@ class CountryDataDatasource : ILuwakDatasource<CountryData, CountryPageFilter> {
 		return countryDatas.find{it.id == id}!!
 	}
 
-	override fun getAll(masterId: Long?, page: Int?, filter: CountryPageFilter?): ArrayList<CountryData> {
+	override fun getAll(masterId: Long?, page: Int?, filter: CountryPageFilter?, sort: HashMap<String, String>?): ArrayList<CountryData> {
 		val filteredCountries =
 				countryDatas.filter { countryData ->
 					(countryData.country.id == masterId) &&

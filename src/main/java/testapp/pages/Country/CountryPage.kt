@@ -38,4 +38,7 @@ class CountryPage : AbstractLuwakMasterDetailPage<CountryPageFilter>() {
 
 }
 
-class CountryPageFilter(val country: String, val city: String) : ILuwakFilter
+class CountryPageFilter : ILuwakFilter {
+	var country: String? = null
+	var city: String? = null
+}

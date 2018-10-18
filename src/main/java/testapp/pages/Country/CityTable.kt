@@ -36,7 +36,7 @@ class CityDto : ILuwakDto {
 	@Label("ID")
 	@MapModel(City.ID)
 	@ColumnType(ColumnTypeEnum.HIDDEN)
-	var id: Int = 0
+	var id: Long = 0
 
 	@Label("luwak.city.name")
 	@MapModel(City.NAME)

@@ -47,7 +47,7 @@ abstract class AbstractLuwakPage<F : ILuwakFilter> {
 
 	val excelFile: XSSFWorkbook
 		get() {
-			val models = table.datasource.getAll(null, null, null)
+			val models = table.datasource.getAll(null, null, null, null)
 			return this.table.toExcel(models)
 		}
 
@@ -66,13 +66,13 @@ abstract class AbstractLuwakPage<F : ILuwakFilter> {
 	 * @return the list of options for a given field
 	 */
 	@Throws(CrudException::class)
-	fun getFilterValues(field: String, input: String): List<Pair<Int, String>> {
+	open fun getFilterValues(field: String, input: String): List<Pair<Int, String>> {
 		return ArrayList()
 	}
 
 	@Throws(CrudException::class)
-	fun getAll(masterId: Long?, page: Int, filter: F?): List<ILuwakDto> {
-		return table.getAll(masterId, page, filter)
+	fun getAll(masterId: Long?, page: Int, filter: F?, sort: HashMap<String, String>?): List<ILuwakDto> {
+		return table.getAll(masterId, page, filter, sort)
 	}
 
 	@Throws(CrudException::class)
