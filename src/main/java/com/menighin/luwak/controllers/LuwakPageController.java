@@ -156,12 +156,15 @@ public class LuwakPageController {
 
 	@ResponseBody
 	@GetMapping(value = "/{page}/count")
-	public CrudResponse<Integer> count(@PathVariable("page") String pageName) {
+	public CrudResponse<Integer> count(@PathVariable("page") String pageName,
+									   @RequestBody(required = false) Map<String, Object> filterMap) {
 		AbstractLuwakPage page = luwakApplication.getPage(pageName);
 
 		try {
-			Integer result = page.count(null);
-			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, result, null);
+			ILuwakFilter filter = filterMap == null
+					? null : (ILuwakFilter) mapper.convertValue(filterMap, page.getFilterClass());
+
+			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, page.count(null, filter), null);
 		}
 		catch (CrudException ce) {
 			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, ce);
@@ -268,11 +271,14 @@ public class LuwakPageController {
 	@GetMapping(value = "/{page}/detail/{tableId}/count")
 	public CrudResponse<Integer> countDetail(@PathVariable("page") String pageName,
 											 @PathVariable("tableId") String tableId,
-											 @RequestParam(value = "masterId") Integer masterId) {
+											 @RequestParam(value = "masterId") Integer masterId,
+											 @RequestBody(required = false) Map<String, Object> filterMap) {
 		AbstractLuwakMasterDetailPage page = (AbstractLuwakMasterDetailPage) luwakApplication.getPage(pageName);
 
 		try {
-			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, page.countDetail(tableId, masterId), null);
+			ILuwakFilter filter = filterMap == null
+					? null : (ILuwakFilter) mapper.convertValue(filterMap, page.getFilterClass());
+			return new CrudResponse<>(ResponseStatusEnum.SUCCESS, page.countDetail(tableId, masterId, filter), null);
 		}
 		catch (CrudException ce) {
 			return new CrudResponse<>(ResponseStatusEnum.ERROR, null, ce);

@@ -51,7 +51,7 @@ class CountryDatasource : ILuwakDatasource<Country, CountryPageFilter> {
 		return true
 	}
 
-	override fun count(masterId: Long?): Int {
+	override fun count(masterId: Long?, filter: CountryPageFilter?): Int {
 		return countries.count()
 	}
 }

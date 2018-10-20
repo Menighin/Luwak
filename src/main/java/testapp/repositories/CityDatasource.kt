@@ -73,7 +73,7 @@ open class CityDatasource() : ILuwakDatasource<City, CityPageFilter> {
 		return true
 	}
 
-	override fun count(masterId: Long?): Int {
+	override fun count(masterId: Long?, filter: CityPageFilter?): Int {
 		return cities.count()
 	}
 }

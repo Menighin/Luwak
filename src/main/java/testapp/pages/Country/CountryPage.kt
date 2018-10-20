@@ -29,10 +29,6 @@ class CountryPage : AbstractLuwakMasterDetailPage<CountryPageFilter>() {
 				countryDataTable as AbstractLuwakDataTable<ILuwakModel, ILuwakDto, CountryPageFilter>
 		)
 
-	override fun getMasterFields(): ArrayList<String> {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-	}
-
 	override val table: AbstractLuwakDataTable<ILuwakModel, ILuwakDto, CountryPageFilter>
 		get() = countryTable as AbstractLuwakDataTable<ILuwakModel, ILuwakDto, CountryPageFilter>
 

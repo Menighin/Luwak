@@ -14,5 +14,5 @@ interface ILuwakDatasource<M : ILuwakModel, F : ILuwakFilter> {
 
 	fun deleteMany(masterId: Long?, ids: LongArray): Boolean
 
-	fun count(masterId: Long?): Int
+	fun count(masterId: Long?, filter: F?): Int
 }

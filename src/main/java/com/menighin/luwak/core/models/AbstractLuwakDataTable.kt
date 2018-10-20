@@ -77,8 +77,8 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 		return dtos
 	}
 
-	fun count(masterId: Long?): Int {
-		return datasource.count(masterId)
+	fun count(masterId: Long?, filter: F?): Int {
+		return datasource.count(masterId, filter)
 	}
 
 	fun create(masterId: Long?, dto: D): Boolean {

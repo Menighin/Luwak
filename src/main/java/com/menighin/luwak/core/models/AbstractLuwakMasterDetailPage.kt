@@ -20,8 +20,6 @@ abstract class AbstractLuwakMasterDetailPage<F : ILuwakFilter> : AbstractLuwakPa
 		filterClass = parameterized.actualTypeArguments[0] as Class<out ILuwakFilter>
 	}
 
-	abstract fun getMasterFields() : ArrayList<String>
-
 	override val pageMetadata: LuwakPageMetadataDto
 		get() {
 			val metadataDto = super.pageMetadata
@@ -64,9 +62,9 @@ abstract class AbstractLuwakMasterDetailPage<F : ILuwakFilter> : AbstractLuwakPa
 	}
 
 	@Throws(CrudException::class)
-	fun countDetail(tableId: String, masterId: Long): Int {
+	fun countDetail(tableId: String, masterId: Long, filter: F?): Int {
 		val table = detailTables.find { it::class.java.simpleName == tableId } ?: throw ClassNotFoundException("Table $tableId does not exist")
-		return table.count(masterId)
+		return table.count(masterId, filter)
 	}
 
 	fun getExcelDetailFile(tableId: String): XSSFWorkbook {

@@ -54,7 +54,7 @@ class CountryDataDatasource : ILuwakDatasource<CountryData, CountryPageFilter> {
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
-	override fun count(masterId: Long?): Int {
+	override fun count(masterId: Long?, filter: CountryPageFilter?): Int {
 		return countryDatas.count()
 	}
 }

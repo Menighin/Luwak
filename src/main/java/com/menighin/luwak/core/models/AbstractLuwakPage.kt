@@ -76,8 +76,8 @@ abstract class AbstractLuwakPage<F : ILuwakFilter> {
 	}
 
 	@Throws(CrudException::class)
-	fun count(masterId: Long?): Int? {
-		return table.count(masterId)
+	fun count(masterId: Long?, filter: F?): Int? {
+		return table.count(masterId, filter)
 	}
 
 	@Throws(CrudException::class, Exception::class)
