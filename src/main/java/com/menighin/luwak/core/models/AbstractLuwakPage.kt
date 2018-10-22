@@ -1,5 +1,6 @@
 package com.menighin.luwak.core.models
 
+import com.menighin.luwak.AbstractLuwakApplication
 import com.menighin.luwak.core.dtos.CrudResponse
 import com.menighin.luwak.core.dtos.LuwakFilterMetadataDto
 import com.menighin.luwak.core.dtos.LuwakPageMetadataDto
@@ -23,6 +24,9 @@ import java.util.ArrayList
 abstract class AbstractLuwakPage<F : ILuwakFilter> {
 
 	@Autowired
+	protected lateinit var luwakApplication: AbstractLuwakApplication
+
+	@Autowired
 	protected lateinit var messageSource: MessageSource
 
 	var filterClass: Class<out ILuwakFilter>? = null
@@ -38,9 +42,9 @@ abstract class AbstractLuwakPage<F : ILuwakFilter> {
 		get() {
 			val pageMetadata = LuwakPageMetadataDto()
 
-			pageMetadata.masterTable = table.getMetadata(messageSource)
+			pageMetadata.masterTable = table.getMetadata(luwakApplication, messageSource)
 
-			pageMetadata.filters = LuwakFilterMetadataDto.getFiltersFrom(filterClass!!)
+			pageMetadata.filters = LuwakFilterMetadataDto.getFiltersFrom(luwakApplication, filterClass!!, messageSource)
 
 			return pageMetadata
 		}

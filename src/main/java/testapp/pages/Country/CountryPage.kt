@@ -1,5 +1,6 @@
 package testapp.pages.Country
 
+import com.menighin.luwak.core.annotations.Label
 import com.menighin.luwak.core.interfaces.ILuwakDto
 import com.menighin.luwak.core.interfaces.ILuwakFilter
 import com.menighin.luwak.core.interfaces.ILuwakModel
@@ -35,6 +36,10 @@ class CountryPage : AbstractLuwakMasterDetailPage<CountryPageFilter>() {
 }
 
 class CountryPageFilter : ILuwakFilter {
+
+	@Label("luwak.country.filter.country")
 	var country: String? = null
+
+	@Label("luwak.country.filter.city")
 	var city: String? = null
 }

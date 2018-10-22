@@ -27,7 +27,7 @@ abstract class AbstractLuwakMasterDetailPage<F : ILuwakFilter> : AbstractLuwakPa
 			if (detailTables.any()) {
 				val detailMetadataDto = ArrayList<LuwakDataTableMetadataDto>()
 				for (table in detailTables) {
-					detailMetadataDto.add(table.getMetadata(messageSource!!))
+					detailMetadataDto.add(table.getMetadata(luwakApplication, messageSource))
 				}
 				metadataDto.detailTables = detailMetadataDto
 			}

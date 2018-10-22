@@ -1,13 +1,13 @@
 package com.menighin.luwak.core.models
 
+import com.menighin.luwak.AbstractLuwakApplication
 import com.menighin.luwak.core.annotations.*
 import com.menighin.luwak.core.dtos.LuwakDataTableMetadataDto
-import com.menighin.luwak.core.enums.ColumnTypeEnum
+import com.menighin.luwak.core.enums.FieldTypeEnum
 import com.menighin.luwak.core.interfaces.ILuwakDatasource
 import com.menighin.luwak.core.interfaces.ILuwakDto
 import com.menighin.luwak.core.interfaces.ILuwakFilter
 import com.menighin.luwak.core.interfaces.ILuwakModel
-import org.apache.poi.ss.formula.functions.Index
 import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.IndexedColors
 import org.apache.poi.xssf.usermodel.XSSFColor
@@ -26,8 +26,8 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 
 	abstract val datasource: ILuwakDatasource<M, F>
 
-	fun getMetadata(messageSource: MessageSource): LuwakDataTableMetadataDto {
-		return LuwakDataTableMetadataDto(this, messageSource)
+	fun getMetadata(luwakApplication: AbstractLuwakApplication, messageSource: MessageSource): LuwakDataTableMetadataDto {
+		return LuwakDataTableMetadataDto(this, luwakApplication, messageSource)
 	}
 
 	// Instance initialization
@@ -116,8 +116,8 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 
 		val excelFields = classDto.declaredFields.filter {
 			isLuwakField(it) &&
-			(!it.isAnnotationPresent(ColumnType::class.java) ||
-					it.isAnnotationPresent(ColumnType::class.java) && it.getAnnotation(ColumnType::class.java).value != ColumnTypeEnum.HIDDEN)
+			(!it.isAnnotationPresent(FieldType::class.java) ||
+					it.isAnnotationPresent(FieldType::class.java) && it.getAnnotation(FieldType::class.java).value != FieldTypeEnum.HIDDEN)
 		}
 		val headerLabels = excelFields.map { f -> f.getAnnotation(Label::class.java).value }
 
@@ -167,9 +167,9 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 
 			// Filling fields
 			for ((i, field) in excelFields.withIndex()) {
-				var columnType = ColumnTypeEnum.TEXT
-				if (field.isAnnotationPresent(ColumnType::class.java))
-					columnType = field.getAnnotation(ColumnType::class.java).value
+				var columnType = FieldTypeEnum.TEXT
+				if (field.isAnnotationPresent(FieldType::class.java))
+					columnType = field.getAnnotation(FieldType::class.java).value
 
 				field.isAccessible = true
 				val value = field.get(dto)
@@ -178,9 +178,9 @@ abstract class AbstractLuwakDataTable<M, D, F> where M: ILuwakModel, D: ILuwakDt
 				val cell = row.createCell(i)
 				cell.setCellValue(value.toString())
 
-				if (columnType == ColumnTypeEnum.DATE)
+				if (columnType == FieldTypeEnum.DATE)
 					cell.cellStyle = dateCellStyle
-				else if (columnType == ColumnTypeEnum.DATETIME)
+				else if (columnType == FieldTypeEnum.DATETIME)
 					cell.cellStyle = dateTimeCellStyle
 			}
 		}

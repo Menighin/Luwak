@@ -1,6 +1,6 @@
 package com.menighin.luwak.core.enums;
 
-public enum ColumnTypeEnum {
+public enum FieldTypeEnum {
 	HIDDEN,
 	INTEGER,
 	DECIMAL,

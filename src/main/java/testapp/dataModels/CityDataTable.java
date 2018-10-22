@@ -1,10 +1,10 @@
 package testapp.dataModels;
 
-import com.menighin.luwak.core.annotations.ColumnType;
+import com.menighin.luwak.core.annotations.FieldType;
 import com.menighin.luwak.core.annotations.Label;
 import com.menighin.luwak.core.annotations.LuwakTable;
 import com.menighin.luwak.core.annotations.MapModel;
-import com.menighin.luwak.core.enums.ColumnTypeEnum;
+import com.menighin.luwak.core.enums.FieldTypeEnum;
 import com.menighin.luwak.core.interfaces.ILuwakDatasource;
 import com.menighin.luwak.core.interfaces.ILuwakDto;
 import com.menighin.luwak.core.models.AbstractLuwakDataTable;
@@ -39,7 +39,7 @@ public class CityDataTable extends AbstractLuwakDataTable<City, CityViewModel, C
 	public class ModalDto implements ILuwakDto {
 		@Label("luwak.city.name")
 		@MapModel(City.NAME)
-		@ColumnType(ColumnTypeEnum.TEXT)
+		@FieldType(FieldTypeEnum.TEXT)
 		private String cityName;
 	}
 }

@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import testapp.pages.CityPage;
 import testapp.pages.Country.CountryPage;
 
+import java.util.Locale;
+
 @SpringBootApplication
 public class TestApplication extends AbstractLuwakApplication {
 
@@ -20,6 +22,11 @@ public class TestApplication extends AbstractLuwakApplication {
 		SpringApplication.run(TestApplication.class, args);
 	}
 
+
+	@Override
+	public Locale getLocale() {
+		return new Locale("pt");
+	}
 
 	@Override
 	protected void setupApplication() {

@@ -1,10 +1,11 @@
 package com.menighin.luwak.core.dtos
 
-import com.menighin.luwak.core.annotations.ColumnType
+import com.menighin.luwak.AbstractLuwakApplication
+import com.menighin.luwak.core.annotations.FieldType
 import com.menighin.luwak.core.annotations.ExcelOnly
 import com.menighin.luwak.core.annotations.Label
 import com.menighin.luwak.core.annotations.LuwakTable
-import com.menighin.luwak.core.enums.ColumnTypeEnum
+import com.menighin.luwak.core.enums.FieldTypeEnum
 import com.menighin.luwak.core.models.AbstractLuwakDataTable
 import org.springframework.context.MessageSource
 import java.util.*
@@ -19,7 +20,7 @@ class LuwakDataTableMetadataDto {
 	var columns: ArrayList<FieldMetadataDto> = ArrayList()
 	var modalFields: ArrayList<FieldMetadataDto> = ArrayList()
 
-	constructor(table: AbstractLuwakDataTable<*, *, *>, messageSource: MessageSource) {
+	constructor(table: AbstractLuwakDataTable<*, *, *>, luwakApplication: AbstractLuwakApplication, messageSource: MessageSource) {
 
 		val dtoClass = table.classDto
 		val tableClass = table.javaClass
@@ -41,9 +42,9 @@ class LuwakDataTableMetadataDto {
 		for (f in columnFields) {
 			if (!f.isAnnotationPresent(Label::class.java)) continue
 
-			val label = messageSource.getMessage(f.getAnnotation(Label::class.java).value, null, Locale("pt"))
-			val columnType = f.getAnnotation(ColumnType::class.java)
-			val columnTypeEnum = columnType?.value ?: ColumnTypeEnum.TEXT
+			val label = messageSource.getMessage(f.getAnnotation(Label::class.java).value, null, luwakApplication.getLocale())
+			val columnType = f.getAnnotation(FieldType::class.java)
+			val columnTypeEnum = columnType?.value ?: FieldTypeEnum.TEXT
 
 			this.columns.add(FieldMetadataDto(f.name, label, columnTypeEnum))
 		}
@@ -52,9 +53,9 @@ class LuwakDataTableMetadataDto {
 		for (f in modalFields) {
 			if (!f.isAnnotationPresent(Label::class.java)) continue
 
-			val label = messageSource.getMessage(f.getAnnotation(Label::class.java).value, null, Locale("pt"))
-			val columnType = f.getAnnotation(ColumnType::class.java)
-			val columnTypeEnum = columnType?.value ?: ColumnTypeEnum.TEXT
+			val label = messageSource.getMessage(f.getAnnotation(Label::class.java).value, null, luwakApplication.getLocale())
+			val columnType = f.getAnnotation(FieldType::class.java)
+			val columnTypeEnum = columnType?.value ?: FieldTypeEnum.TEXT
 
 			this.modalFields.add(FieldMetadataDto(f.name, label, columnTypeEnum))
 		}
